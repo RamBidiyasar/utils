@@ -2,9 +2,11 @@ package in.wynk.secret.manager.aerospike.service;
 
 import com.aerospike.client.Record;
 import in.wynk.secret.manager.aerospike.config.AerospikeConfig;
+import in.wynk.secret.manager.aerospike.dto.response.PaginatedResponse;
+import in.wynk.secret.manager.aerospike.dto.response.StatsResponse;
 import in.wynk.secret.manager.aerospike.enums.AerospikeEnvironment;
 import in.wynk.secret.manager.aerospike.repository.AerospikeRepository;
-import in.wynk.secret.manager.aerospike.dto.AerospikeRequest;
+import in.wynk.secret.manager.aerospike.dto.request.AerospikeRequest;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +25,13 @@ public class AerospikeClientService {
         return getRepo(req.getEnv()).getRecord(req.getNamespace(), req.getSet(), req.getKey());
     }
 
-    public Map<String, Object> fetchAll(AerospikeRequest req) {
-        return getRepo(req.getEnv()).scanSet(req.getNamespace(), req.getSet(), k -> true);
+    public PaginatedResponse fetchAll(AerospikeRequest req) {
+        int pageSize = 10; // You can make this configurable
+        return getRepo(req.getEnv()).scanSetPaginated(req.getNamespace(), req.getSet(), req.getPage(), pageSize);
+    }
+
+    public StatsResponse getStats(AerospikeRequest req) {
+        return getRepo(req.getEnv()).getSetStatistics(req.getNamespace(), req.getSet());
     }
 
     public boolean delete(AerospikeRequest request) {

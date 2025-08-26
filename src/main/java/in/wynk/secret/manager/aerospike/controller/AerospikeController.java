@@ -1,7 +1,10 @@
 package in.wynk.secret.manager.aerospike.controller;
 
-import in.wynk.secret.manager.aerospike.dto.AerospikeRequest;
+import in.wynk.secret.manager.aerospike.dto.request.AerospikeRequest;
+import in.wynk.secret.manager.aerospike.dto.response.PaginatedResponse;
+import in.wynk.secret.manager.aerospike.dto.response.StatsResponse;
 import in.wynk.secret.manager.aerospike.service.AerospikeClientService;
+import java.awt.print.Pageable;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import com.aerospike.client.Record;
@@ -34,8 +37,14 @@ public class AerospikeController {
     }
 
     @PostMapping("/fetchAll")
-    public Map<String, Object> fetchAll(@RequestBody AerospikeRequest request) {
+    public PaginatedResponse fetchAll(@RequestBody AerospikeRequest request) {
         return service.fetchAll(request);
+    }
+
+
+    @PostMapping("/getStats")
+    public StatsResponse getStats(@RequestBody AerospikeRequest request) {
+        return service.getStats(request);
     }
 
     @PostMapping("/searchByPrefix")

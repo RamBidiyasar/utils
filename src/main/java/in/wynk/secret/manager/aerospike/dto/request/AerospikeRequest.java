@@ -1,4 +1,4 @@
-package in.wynk.secret.manager.aerospike.dto;
+package in.wynk.secret.manager.aerospike.dto.request;
 
 import in.wynk.secret.manager.aerospike.enums.AerospikeEnvironment;
 import java.util.Map;
@@ -12,4 +12,5 @@ public class AerospikeRequest {
     private String key;
     private Map<String, Object> data;
     private String prefix;
+    private int page = 1;
 }

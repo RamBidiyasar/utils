@@ -10,160 +10,62 @@
 
   <style>
     :root {
-      --bg-color: #0d1117;
-      --primary-color: #00aaff;
-      --secondary-color: #00f2ea;
-      --text-color: #c9d1d9;
-      --border-color: #30363d;
-      --container-bg: #161b22;
-      --input-bg: #010409;
-      --success-color: #3fb950;
-      --error-color: #f85149;
-      --warning-color: #f0b90b;
-      --json-key-color: #79c0ff;
-      --json-string-color: #a5d6ff;
-      --json-number-color: #ff9800;
-      --json-boolean-color: #ff7b72;
-      --accent-color-1: #58a6ff;
-      --accent-color-2: #1f6feb;
-      --accent-color-3: #8957e5;
-      --accent-color-4: #db61a2;
+      --bg-color: #0d1117; --primary-color: #00aaff; --secondary-color: #00f2ea; --text-color: #c9d1d9;
+      --border-color: #30363d; --container-bg: #161b22; --input-bg: #010409; --success-color: #3fb950;
+      --error-color: #f85149; --warning-color: #f0b90b; --accent-color-1: #58a6ff; --accent-color-2: #1f6feb;
+      --accent-color-3: #8957e5; --accent-color-4: #db61a2;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Roboto Mono', monospace;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      padding: 20px;
-      min-height: 100vh;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1800px;
-      margin: 0 auto;
-    }
-
-    /* --- Main Layout --- */
-    .main-content {
-      display: flex;
-      gap: 30px;
-      align-items: flex-start;
-    }
-
-    .query-panel {
-      flex: 0 0 550px;
-      position: sticky;
-      top: 20px;
-      background: var(--container-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 30px 40px;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
-    }
-
+    body { font-family: 'Roboto Mono', monospace; background-color: var(--bg-color); color: var(--text-color); padding: 20px; min-height: 100vh; }
+    .container { width: 100%; max-width: 1800px; margin: 0 auto; }
+    .main-content { display: flex; gap: 30px; align-items: flex-start; }
+    .query-panel { flex: 0 0 550px; position: sticky; top: 20px; background: var(--container-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px 40px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.2); }
     .response-panel { flex: 1; min-width: 0; }
-
-    @media (max-width: 1200px) {
-      .main-content { flex-direction: column; }
-      .query-panel { position: static; width: 100%; flex-basis: auto; }
-    }
-
+    @media (max-width: 1200px) { .main-content { flex-direction: column; } .query-panel { position: static; width: 100%; flex-basis: auto; } }
     .header { text-align: center; margin-bottom: 30px; }
     h1 { font-size: 2em; font-weight: 700; color: #fff; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
     .header p { color: var(--text-color); font-size: 0.9em; }
-
     .form-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 25px; }
     @media (min-width: 400px) { .form-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
-
     label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; color: var(--primary-color); }
-
     select, input[type="text"], textarea { width: 100%; padding: 12px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 1em; font-family: 'Roboto Mono', monospace; transition: all 0.3s ease; }
     textarea { resize: vertical; min-height: 120px; }
     select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300aaff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
     select:focus, input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px rgba(0, 170, 255, 0.3); }
-
-    .collapsible-input { margin: 30px 0; }
-    .collapsible-input summary { cursor: pointer; font-weight: 500; font-size: 0.9em; color: var(--primary-color); list-style: none; }
-    .collapsible-input summary::-webkit-details-marker { display: none; }
-    .collapsible-input summary::before { content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 10px; display: inline-block; transition: transform 0.2s ease-in-out; }
-    .collapsible-input[open]>summary::before { transform: rotate(-180deg); }
-    .collapsible-input .form-group { padding-top: 15px; }
-
+    .collapsible-input { margin: 30px 0; } .collapsible-input summary { cursor: pointer; font-weight: 500; font-size: 0.9em; color: var(--primary-color); list-style: none; } .collapsible-input summary::-webkit-details-marker { display: none; } .collapsible-input summary::before { content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 10px; display: inline-block; transition: transform 0.2s ease-in-out; } .collapsible-input[open]>summary::before { transform: rotate(-180deg); } .collapsible-input .form-group { padding-top: 15px; }
     .query-section { border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 30px; background-color: rgba(0, 0, 0, 0.2); }
     #query-helper { margin-top: 15px; text-align: center; font-size: 0.9em; color: var(--secondary-color); background-color: var(--input-bg); padding: 8px; border-radius: 4px; border-left: 3px solid var(--secondary-color); }
     .actions-container { display: flex; flex-direction: column; gap: 15px; }
-
-    .btn { padding: 12px 20px; border: 1px solid var(--primary-color); border-radius: 6px; background-color: transparent; color: var(--primary-color); font-size: 0.9em; font-weight: 500; font-family: 'Roboto Mono', monospace; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn:hover, .btn:focus { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3); }
-    .btn-primary { background-color: var(--primary-color); color: var(--bg-color); }
-    .btn-primary:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
-
-    /* --- Output Section --- */
-    .output-terminal { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; position: relative; }
-    .terminal-header { background: var(--border-color); padding: 8px 15px; font-size: 0.8em; color: var(--text-color); display: flex; align-items: center; justify-content: space-between; }
-    .terminal-title { display: flex; align-items: center; gap: 10px; }
-    .terminal-actions { display: flex; gap: 10px; }
-    .terminal-actions .btn { padding: 4px 10px; font-size: 0.8em; }
-
-    #status-indicator { width: 10px; height: 10px; border-radius: 50%; background-color: #555; transition: background-color 0.3s ease; }
-    .status-waiting { background-color: var(--warning-color); animation: pulse 1.5s infinite; }
-    .status-success { background-color: var(--success-color); }
-    .status-error { background-color: var(--error-color); }
-
-    #loader { display: none; justify-content: center; align-items: center; padding: 40px; min-height: 200px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--primary-color); margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both; }
-    .dot-1 { animation-delay: -0.32s; } .dot-2 { animation-delay: -0.16s; }
-
-    #output-container { min-height: 200px; max-height: 85vh; overflow-y: auto; padding: 20px; font-size: 0.9em; }
-    #output-container:empty::before { content: "// System ready. Awaiting your command."; color: #888; font-style: italic; }
-
-    /* Record Entry Styling */
-    .record-entry { background-color: var(--bg-color); border: 1px solid var(--border-color); border-left: 4px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; animation: fadeIn 0.5s ease-out; transition: border-left-color 0.3s ease; }
-    .record-entry.color-0 { border-left-color: var(--accent-color-1); }
-    .record-entry.color-1 { border-left-color: var(--accent-color-2); }
-    .record-entry.color-2 { border-left-color: var(--accent-color-3); }
-    .record-entry.color-3 { border-left-color: var(--accent-color-4); }
-
-    .record-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 10px 15px; list-style: none; cursor: pointer; }
-    .record-header::-webkit-details-marker { display: none; }
-    .record-header-info { display: flex; flex-direction: column; gap: 4px; flex-grow: 1; overflow: hidden; }
-    .record-key { font-weight: bold; color: var(--secondary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .record-ttl { font-size: 0.8em; color: var(--text-color); opacity: 0.7; }
-    .record-ttl .fa-clock { margin-right: 5px; }
-    .record-actions { display: flex; gap: 8px; }
-    .record-actions .btn { background: transparent; border: 1px solid var(--border-color); padding: 5px 10px; font-size: 0.8em; color: var(--text-color); flex-shrink: 0; }
-    .record-actions .btn:hover { color: var(--bg-color); }
-    .record-actions .btn.delete:hover { background-color: var(--error-color); border-color: var(--error-color); }
-    .record-actions .btn.copy-val:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
+    .btn { padding: 12px 20px; border: 1px solid var(--primary-color); border-radius: 6px; background-color: transparent; color: var(--primary-color); font-size: 0.9em; font-weight: 500; font-family: 'Roboto Mono', monospace; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; } .btn:hover, .btn:focus { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3); } .btn-primary { background-color: var(--primary-color); color: var(--bg-color); } .btn-primary:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
+    .output-terminal { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; position: relative; } .terminal-header { background: var(--border-color); padding: 8px 15px; font-size: 0.8em; color: var(--text-color); display: flex; align-items: center; justify-content: space-between; } .terminal-title { display: flex; align-items: center; gap: 10px; } .terminal-actions { display: flex; gap: 10px; } .terminal-actions .btn { padding: 4px 10px; font-size: 0.8em; }
+    #status-indicator { width: 10px; height: 10px; border-radius: 50%; background-color: #555; transition: background-color 0.3s ease; } .status-waiting { background-color: var(--warning-color); animation: pulse 1.5s infinite; } .status-success { background-color: var(--success-color); } .status-error { background-color: var(--error-color); }
+    #loader { display: none; justify-content: center; align-items: center; padding: 40px; min-height: 200px; } .dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--primary-color); margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both; } .dot-1 { animation-delay: -0.32s; } .dot-2 { animation-delay: -0.16s; }
+    #output-container { min-height: 200px; max-height: 85vh; overflow-y: auto; padding: 20px; font-size: 0.9em; } #output-container:empty::before { content: "// System ready. Awaiting your command."; color: #888; font-style: italic; }
+    .record-entry { background-color: var(--bg-color); border: 1px solid var(--border-color); border-left: 4px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; animation: fadeIn 0.5s ease-out; transition: border-left-color 0.3s ease; } .record-entry.color-0 { border-left-color: var(--accent-color-1); } .record-entry.color-1 { border-left-color: var(--accent-color-2); } .record-entry.color-2 { border-left-color: var(--accent-color-3); } .record-entry.color-3 { border-left-color: var(--accent-color-4); }
+    .record-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 10px 15px; list-style: none; cursor: pointer; } .record-header::-webkit-details-marker { display: none; }
+    .record-header-info { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 15px; flex-grow: 1; overflow: hidden; }
+    .record-key { font-weight: bold; color: var(--secondary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-basis: 100%; }
+    .record-meta-item { font-size: 0.8em; color: var(--text-color); opacity: 0.7; display: flex; align-items: center; gap: 5px; }
+    .record-actions { display: flex; gap: 8px; } .record-actions .btn { background: transparent; border: 1px solid var(--border-color); padding: 5px 10px; font-size: 0.8em; color: var(--text-color); flex-shrink: 0; } .record-actions .btn:hover { color: var(--bg-color); } .record-actions .btn.delete:hover { background-color: var(--error-color); border-color: var(--error-color); } .record-actions .btn.copy-val:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
     .record-body { padding: 15px; border-top: 1px solid var(--border-color); }
-
-    /* JSON Viewer */
-    .json-viewer ul { list-style-type: none; padding-left: 20px; } .json-viewer li { position: relative; } .json-viewer details summary { list-style: none; display: inline-block; cursor: pointer; } .json-viewer details summary::-webkit-details-marker { display: none; } .json-viewer .json-key { color: var(--json-key-color); } .json-viewer .json-string { color: var(--json-string-color); } .json-viewer .json-number { color: var(--json-number-color); } .json-viewer .json-boolean { color: var(--json-boolean-color); } .json-viewer .json-null { color: #aaa; } .json-viewer .json-brace { color: var(--primary-color); }
-
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(240, 185, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0); } }
-    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    #set-stats-display { background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 15px; margin: 20px 0; border-radius: 6px; font-size: 0.9em; color: var(--text-color); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .stat-item { text-align: center; } .stat-item-label { font-size: 0.8em; opacity: 0.7; } .stat-item-value { font-weight: bold; color: var(--secondary-color); }
+    .pagination-controls { display: flex; justify-content: center; align-items: center; padding: 10px; gap: 8px; border-top: 1px solid var(--border-color); background: var(--bg-color); } .pagination-controls .btn { padding: 5px 12px; font-size: 0.8em; } .pagination-controls .btn[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; } .pagination-info { font-size: 0.9em; color: var(--text-color); margin: 0 10px; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(240, 185, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0); } } @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body onload="updateQueryHelper()">
+<body onload="updateQueryHelper(); fetchSetStats();">
 
 <div class="container">
   <main class="main-content">
     <div class="query-panel">
-      <header class="header">
-        <h1>Aerospike Nexus</h1>
-        <p>Data Command & Control Interface</p>
-      </header>
-
+      <header class="header"><h1>Aerospike Nexus</h1><p>Data Command & Control Interface</p></header>
       <div class="form-grid">
-        <div class="form-group"><label for="env">Environment</label><select id="env"><option value="PREPROD">PREPROD</option><option value="PROD">PROD</option></select></div>
-        <div class="form-group"><label for="namespace">Namespace</label><select id="namespace"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
-        <div class="form-group"><label for="set">Set</label><select id="set"><option value="staticPackage">staticPackage</option><option value="defaultPage">defaultPage</option><option value="origami-user-page">origami-user-page</option></select></div>
+        <div class="form-group"><label for="env">Environment</label><select id="env" onchange="fetchSetStats()"><option value="PREPROD">PREPROD</option><option value="PROD">PROD</option></select></div>
+        <div class="form-group"><label for="namespace">Namespace</label><select id="namespace" onchange="fetchSetStats()"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
+        <div class="form-group"><label for="set">Set</label><select id="set" onchange="fetchSetStats()"><option value="staticPackage">staticPackage</option><option value="defaultPage">defaultPage</option><option value="origami-user-page">origami-user-page</option></select></div>
       </div>
-
+      <div id="set-stats-display">Fetching stats...</div>
       <div class="query-section">
         <div class="form-grid">
           <div class="form-group"><label for="key">Primary Key</label><input type="text" id="key" placeholder="Fetch by exact key" oninput="updateQueryHelper()"></div>
@@ -171,36 +73,26 @@
         </div>
         <p id="query-helper"></p>
       </div>
-
       <div class="actions-container">
         <button class="btn btn-primary" onclick="handleQuery()"><i class="fa-solid fa-bolt"></i> Execute Query</button>
         <button class="btn" onclick="send('save')"><i class="fa-solid fa-save"></i> Save</button>
         <button class="btn" onclick="send('count')"><i class="fa-solid fa-hashtag"></i> Count</button>
       </div>
-
-      <details class="collapsible-input">
-        <summary>Data to Save (JSON)</summary>
-        <div class="form-group"><textarea id="data" placeholder='{ "binName": "binValue" }'></textarea></div>
-      </details>
+      <details class="collapsible-input"><summary>Data to Save (JSON)</summary><div class="form-group"><textarea id="data" placeholder='{ "binName": "binValue" }'></textarea></div></details>
     </div>
-
     <div class="response-panel">
       <div class="output-terminal">
         <div class="terminal-header">
-                        <span class="terminal-title">
-                            <div id="status-indicator"></div>
-                            RESPONSE LOG
-                        </span>
+          <span class="terminal-title"><div id="status-indicator"></div>RESPONSE LOG</span>
           <div class="terminal-actions">
             <button class="btn" onclick="toggleAllDetails(true)" title="Expand All"><i class="fa-solid fa-arrows-down-to-line"></i></button>
             <button class="btn" onclick="toggleAllDetails(false)" title="Collapse All"><i class="fa-solid fa-arrows-up-to-line"></i></button>
             <button id="copy-all-btn" class="btn" onclick="copyAllResponses()" title="Copy All Responses"><i class="fa-solid fa-copy"></i> All</button>
           </div>
         </div>
-        <div id="loader">
-          <div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div>
-        </div>
+        <div id="loader"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div></div>
         <div id="output-container"></div>
+        <div id="pagination-container" class="pagination-controls"></div>
       </div>
     </div>
   </main>
@@ -211,54 +103,85 @@
   const loader = document.getElementById('loader');
   const statusIndicator = document.getElementById('status-indicator');
   let recordDataStore = {};
+  let currentPage = 1;
+  let totalPages = 1;
 
-  function updateQueryHelper() { /* ... unchanged ... */
-    const key = document.getElementById("key").value.trim(); const prefix = document.getElementById("prefix").value.trim(); const helper = document.getElementById("query-helper");
-    if (key) { helper.textContent = "Action: Fetch record by Primary Key."; document.getElementById("prefix").value = ''; } else if (prefix) { helper.textContent = "Action: Search for records by Prefix."; } else { helper.textContent = "Action: Fetch all records in the selected Set."; }
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
-  function handleQuery() { /* ... unchanged ... */
-    const key = document.getElementById("key").value.trim(); const prefix = document.getElementById("prefix").value.trim();
+
+  async function fetchSetStats() {
+    const statsDisplay = document.getElementById('set-stats-display');
+    statsDisplay.innerHTML = `<div class="stat-item"><div class="stat-item-label">Status</div><div class="stat-item-value">Fetching...</div></div>`;
+    try {
+      const res = await fetch(`/aerospike/getStats`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ env: document.getElementById("env").value, namespace: document.getElementById("namespace").value, set: document.getElementById("set").value })
+      });
+      if (!res.ok) throw new Error('Failed to fetch stats');
+      const data = await res.json();
+      statsDisplay.innerHTML = `
+                <div class="stat-item"><div class="stat-item-label">Total Records</div><div class="stat-item-value">${data.recordCount.toLocaleString()}</div></div>
+                <div class="stat-item"><div class="stat-item-label">Memory Usage</div><div class="stat-item-value">${formatBytes(data.memoryUsedBytes)}</div></div>
+                <div class="stat-item"><div class="stat-item-label">Device Usage</div><div class="stat-item-value">${formatBytes(data.deviceUsedBytes)}</div></div>
+            `;
+    } catch (error) {
+      statsDisplay.innerHTML = `<div class="stat-item"><div class="stat-item-label">Status</div><div class="stat-item-value" style="color: var(--error-color);">Error</div></div>`;
+      console.error("Stats fetch error:", error);
+    }
+  }
+
+  function handleQuery() {
+    currentPage = 1;
+    const key = document.getElementById("key").value.trim();
+    const prefix = document.getElementById("prefix").value.trim();
     if (key) { send('fetch'); } else if (prefix) { send('searchByPrefix'); } else { send('fetchAll'); }
   }
-  function formatTTL(seconds) { /* ... unchanged ... */
-    if (seconds === -1 || seconds === 0) return 'Never Expires'; if (seconds < 60) return `< 1m`; const d = Math.floor(seconds / (3600 * 24)); const h = Math.floor(seconds % (3600 * 24) / 3600); const m = Math.floor(seconds % 3600 / 60); const dDisplay = d > 0 ? d + 'd ' : ''; const hDisplay = h > 0 ? h + 'h ' : ''; const mDisplay = m > 0 ? m + 'm' : ''; return `Expires in: ${dDisplay}${hDisplay}${mDisplay}`.trim();
-  }
-  function createJsonViewer(data) { /* ... unchanged ... */
-    const container = document.createElement('div'); container.className = 'json-viewer'; const parseValue = (value) => { if (value === null) return `<span class="json-null">null</span>`; if (typeof value === 'string') { try { const nestedObj = JSON.parse(value); if (typeof nestedObj === 'object' && nestedObj !== null) { return createJsonViewer(nestedObj).outerHTML; } } catch (e) {} return `<span class="json-string">"${value.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"</span>`; } if (typeof value === 'number') return `<span class="json-number">${value}</span>`; if (typeof value === 'boolean') return `<span class="json-boolean">${value}</span>`; if (typeof value === 'object') { const isArray = Array.isArray(value); const keys = Object.keys(value); if (keys.length === 0) return isArray ? '[]' : '{}'; const details = document.createElement('details'); const summary = document.createElement('summary'); summary.innerHTML = `<span class="json-brace">${isArray ? '[' : '{'}</span>...<span class="json-brace">${isArray ? ']' : '}'}</span>`; details.appendChild(summary); const list = document.createElement('ul'); for (const key of keys) { const item = document.createElement('li'); const keyHtml = isArray ? '' : `<span class="json-key">"${key}"</span>: `; item.innerHTML = keyHtml + parseValue(value[key]); list.appendChild(item); } details.appendChild(list); return details.outerHTML; } return value; }; container.innerHTML = parseValue(data); return container;
-  }
 
-  function renderResponse(data, key = '') {
+  function renderResponse(response, key = '') {
     outputContainer.innerHTML = '';
     recordDataStore = {};
-    if (typeof data !== 'object' || data === null) { outputContainer.textContent = data ? data.toString() : 'No content'; return; }
-    const entries = Object.entries(data);
-    if (entries.length === 0 && key) { outputContainer.innerHTML = `<div class="record-entry"><div class="record-body">// No record found for key: <strong>${key}</strong></div></div>`; }
-    else if (entries.length > 0 && entries.every(([k, v]) => typeof v === 'object' && v !== null && 'values' in v)) {
-      entries.forEach(([recordKey, recordData], index) => { createRecordCard(recordKey, recordData, index); });
-    } else if ('values' in data) {
-      createRecordCard(document.getElementById("key").value.trim(), data, 0);
+    document.getElementById('pagination-container').innerHTML = '';
+
+    if (response && typeof response.records === 'object') {
+      const { records, totalPages: total, currentPage: current } = response;
+      totalPages = total;
+      currentPage = current;
+      const entries = Object.entries(records);
+      if (entries.length === 0) {
+        outputContainer.innerHTML = `<div class="record-entry"><div class="record-body">// No records found for this query.</div></div>`;
+      } else {
+        entries.forEach(([recordKey, recordData], index) => createRecordCard(recordKey, recordData, index));
+      }
+      renderPaginationControls();
+    } else if (response && 'values' in response) { // Handle single record response
+      createRecordCard(key, response, 0);
     } else {
-      createRecordCard("Response Data", { ttl: -1, values: data }, 0);
+      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body">${response.toString()}</div></div>`;
     }
   }
 
   function createRecordCard(key, data, index) {
     const recordEntry = document.createElement('details');
-    recordEntry.className = 'record-entry';
-    recordEntry.classList.add(`color-${index % 4}`);
+    recordEntry.className = `record-entry color-${index % 4}`;
     recordEntry.id = `record-${key}`;
 
-    const ttl = data.ttl ?? -1;
-    const bins = data.values ?? data;
-    recordDataStore[key] = bins;
-    const ttlString = formatTTL(ttl);
+    const { ttl = -1, values, size = 0 } = data;
+    recordDataStore[key] = values;
 
     const header = document.createElement('summary');
     header.className = 'record-header';
     header.innerHTML = `
             <div class="record-header-info">
                 <span class="record-key" title="${key}">${key}</span>
-                <span class="record-ttl"><i class="fa-solid fa-clock"></i>${ttlString}</span>
+                <span class="record-meta-item" title="Time To Live"><i class="fa-solid fa-clock fa-fw"></i>${formatTTL(ttl)}</span>
+                <span class="record-meta-item" title="Record Size"><i class="fa-solid fa-database fa-fw"></i>${formatBytes(size)}</span>
             </div>
             <div class="record-actions">
                 <button class="btn copy-val" onclick="copyRecordValue(event, '${key}')" title="Copy value JSON"><i class="fa-regular fa-copy"></i></button>
@@ -267,62 +190,70 @@
 
     const body = document.createElement('div');
     body.className = 'record-body';
-    body.appendChild(createJsonViewer(bins));
-
+    body.appendChild(createJsonViewer(values));
     recordEntry.appendChild(header);
     recordEntry.appendChild(body);
     outputContainer.appendChild(recordEntry);
   }
 
-  function toggleAllDetails(expand) {
-    const allDetails = document.querySelectorAll('#output-container .record-entry');
-    allDetails.forEach(detail => { detail.open = expand; });
+  function renderPaginationControls() {
+    const container = document.getElementById('pagination-container');
+    if (totalPages <= 1) { container.innerHTML = ''; return; }
+    const prevDisabled = (currentPage === 1) ? 'disabled' : '';
+    const nextDisabled = (currentPage === totalPages) ? 'disabled' : '';
+    container.innerHTML = `
+            <button class="btn" onclick="goToPage(1)" ${prevDisabled} title="First Page">&laquo;</button>
+            <button class="btn" onclick="goToPage(${currentPage - 1})" ${prevDisabled} title="Previous Page">&lsaquo;</button>
+            <span class="pagination-info">Page ${currentPage} of ${totalPages}</span>
+            <button class="btn" onclick="goToPage(${currentPage + 1})" ${nextDisabled} title="Next Page">&rsaquo;</button>
+            <button class="btn" onclick="goToPage(${totalPages})" ${nextDisabled} title="Last Page">&raquo;</button>`;
   }
 
-  function copyAllResponses() {
-    if (Object.keys(recordDataStore).length === 0) {
-      alert('No response data to copy.');
-      return;
-    }
-    navigator.clipboard.writeText(JSON.stringify(recordDataStore, null, 2)).then(() => {
-      const btn = document.getElementById('copy-all-btn');
-      const icon = btn.querySelector('i');
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-      setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
-    }).catch(err => console.error('Failed to copy all responses: ', err));
+  function goToPage(pageNumber) {
+    if (pageNumber < 1 || pageNumber > totalPages || pageNumber === currentPage) return;
+    currentPage = pageNumber;
+    send('fetchAll');
   }
 
-  function copyRecordValue(event, key) { /* ... unchanged ... */
-    event.preventDefault(); event.stopPropagation(); const dataToCopy = recordDataStore[key]; if (!dataToCopy) return;
-    navigator.clipboard.writeText(JSON.stringify(dataToCopy, null, 2)).then(() => { const button = event.currentTarget; const icon = button.querySelector('i'); icon.className = 'fa-solid fa-check'; button.title = 'Copied!'; setTimeout(() => { icon.className = 'fa-regular fa-copy'; button.title = 'Copy value JSON'; }, 2000); }).catch(err => console.error('Failed to copy record value: ', err));
-  }
-
-  async function deleteRecord(event, key) { /* ... unchanged ... */
-    event.preventDefault(); event.stopPropagation();
-    if (!confirm(`🛑 Are you sure you want to permanently delete the record with key:\n\n'${key}'?`)) { return; }
-    document.getElementById("key").value = key; await send('delete'); const cardToRemove = document.getElementById(`record-${key}`);
-    if (cardToRemove) { cardToRemove.style.transition = 'opacity 0.3s ease, transform 0.3s ease'; cardToRemove.style.opacity = '0'; cardToRemove.style.transform = 'scale(0.95)'; setTimeout(() => cardToRemove.remove(), 300); }
-  }
-
-  async function send(endpoint) { /* ... unchanged ... */
-    loader.style.display = 'flex'; outputContainer.style.display = 'none'; statusIndicator.className = 'status-waiting'; const request = { env: document.getElementById("env").value, namespace: document.getElementById("namespace").value, set: document.getElementById("set").value, key: document.getElementById("key").value.trim(), prefix: document.getElementById("prefix").value.trim(), data: {} };
-    if (endpoint === "save") {
-      const dataStr = document.getElementById("data").value.trim();
-      if (!request.key) { alert("Primary Key is required to save data."); loader.style.display = 'none'; outputContainer.style.display = 'block'; return; }
-      if (!dataStr) { alert("Data field cannot be empty for a Save operation."); loader.style.display = 'none'; outputContainer.style.display = 'block'; return; }
-      try { request.data = JSON.parse(dataStr); } catch (e) { statusIndicator.className = 'status-error'; outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color)">// ERROR: Invalid JSON format.\n${e.message}</div></div>`; loader.style.display = 'none'; outputContainer.style.display = 'block'; return; }
-    }
+  async function send(endpoint) {
+    loader.style.display = 'flex';
+    outputContainer.style.display = 'none';
+    statusIndicator.className = 'status-waiting';
+    const request = {
+      env: document.getElementById("env").value, namespace: document.getElementById("namespace").value,
+      set: document.getElementById("set").value, key: document.getElementById("key").value.trim(),
+      prefix: document.getElementById("prefix").value.trim(), data: {}, page: currentPage
+    };
+    // ... (rest of send function is unchanged)
     try {
       const httpMethod = (endpoint === 'delete') ? 'DELETE' : 'POST';
       const res = await fetch(`/aerospike/${endpoint}`, { method: httpMethod, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request) });
       if (!res.ok) { const errorText = await res.text(); throw new Error(`HTTP ${res.status}: ${res.statusText}\n${errorText}`); }
-      statusIndicator.className = 'status-success'; const contentType = res.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) { renderResponse(await res.json(), request.key); } else { renderResponse(await res.text()); }
-    } catch (error) { statusIndicator.className = 'status-error'; outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color)">// REQUEST FAILED\n${error.message}</div></div>`; console.error("Fetch error:", error);
-    } finally { loader.style.display = 'none'; outputContainer.style.display = 'block'; }
+      statusIndicator.className = 'status-success';
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        renderResponse(await res.json(), request.key);
+      } else {
+        renderResponse(await res.text());
+      }
+    } catch (error) {
+      statusIndicator.className = 'status-error';
+      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color)">// REQUEST FAILED\n${error.message}</div></div>`;
+      console.error("Fetch error:", error);
+    } finally {
+      loader.style.display = 'none';
+      outputContainer.style.display = 'block';
+    }
   }
-</script>
 
+  // --- All other utility JS functions (formatTTL, createJsonViewer, deleteRecord, copyRecordValue, etc.) remain the same ---
+  function formatTTL(seconds) { if (seconds === -1 || seconds === 0) return 'Never'; if (seconds < 60) return `< 1m`; const d = Math.floor(seconds / (3600 * 24)); const h = Math.floor(seconds % (3600 * 24) / 3600); const m = Math.floor(seconds % 3600 / 60); return `${d > 0 ? d + 'd ' : ''}${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'm' : ''}`.trim(); }
+  function toggleAllDetails(expand) { document.querySelectorAll('#output-container .record-entry').forEach(d => d.open = expand); }
+  function copyAllResponses() { if (Object.keys(recordDataStore).length === 0) return; navigator.clipboard.writeText(JSON.stringify(recordDataStore, null, 2)); }
+  function copyRecordValue(event, key) { event.preventDefault(); event.stopPropagation(); navigator.clipboard.writeText(JSON.stringify(recordDataStore[key], null, 2)); }
+  async function deleteRecord(event, key) { event.preventDefault(); event.stopPropagation(); if (!confirm(`🛑 Are you sure you want to permanently delete the record with key:\n\n'${key}'?`)) return; document.getElementById("key").value = key; await send('delete'); const card = document.getElementById(`record-${key}`); if (card) card.remove(); }
+  function updateQueryHelper() { const key = document.getElementById("key").value.trim(); const prefix = document.getElementById("prefix").value.trim(); const helper = document.getElementById("query-helper"); if (key) { helper.textContent = "Action: Fetch record by Primary Key."; document.getElementById("prefix").value = ''; } else if (prefix) { helper.textContent = "Action: Search for records by Prefix."; } else { helper.textContent = "Action: Fetch all records in the selected Set."; } }
+  function createJsonViewer(data) { const c = document.createElement('div'); c.className = 'json-viewer'; const p = (v) => { if (v === null) return `<span class="json-null">null</span>`; if (typeof v === 'string') { try { const n = JSON.parse(v); if (typeof n === 'object' && n !== null) return createJsonViewer(n).outerHTML; } catch (e) {} return `<span class="json-string">"${v.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"</span>`; } if (typeof v === 'number') return `<span class="json-number">${v}</span>`; if (typeof v === 'boolean') return `<span class="json-boolean">${v}</span>`; if (typeof v === 'object') { const i = Array.isArray(v); const k = Object.keys(v); if (k.length === 0) return i ? '[]' : '{}'; const d = document.createElement('details'); const s = document.createElement('summary'); s.innerHTML = `<span class="json-brace">${i ? '[' : '{'}</span>...<span class="json-brace">${i ? ']' : '}'}</span>`; d.appendChild(s); const l = document.createElement('ul'); for (const key of k) { const item = document.createElement('li'); item.innerHTML = (i ? '' : `<span class="json-key">"${key}"</span>: `) + p(v[key]); l.appendChild(item); } d.appendChild(l); return d.outerHTML; } return v; }; c.innerHTML = p(data); return c; }
+</script>
 </body>
 </html>
