@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: ${!app.name:false}
+
+  cloud:
+    gcp:
+      project-id: prj-wynk-pre-iptv-svc-01
+      secretmanager:
+        enabled: false
+  config:
+    import: sm://
+
+test:
+  data1: testing
+
+wynk:
+  elastic:
+    url: 10.169.24.16
+    missing:
+      content:
+        index: missing_content_report_preprod
+    error:
+      reporting:
+        index: atv-error_report_preprod
+    userName: elastic
+    password: cCnQ38wB9sjkxHrr3u18
+
+matching-rules:
+  condition: AND
+  rules:
+    - condition: AND
+      rules:
+        - source-field: fullName
+          target-field: customerName
+          type: FUZZY
+          params:
+            maxDistance: 2
+        - source-field: addressCity
+          target-field: locationCity
+          type: EXACT
+    - source-field: userAge
+      target-field: clientAge
+      type: RANGE
+      params:
+        range: 1
