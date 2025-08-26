@@ -2,383 +2,389 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Aerospike Nexus | Aurora UI</title>
+  <title>Aerospike Nexus | Grove UI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <style>
-    /* --- AURORA THEME & MODERN UI REVAMP --- */
+    /* --- GROVE THEME - NATURE INSPIRED UI --- */
     :root {
-      --bg-dark: #0f172a;
-      --bg-medium: #1e293b;
-      --bg-glass: rgba(30, 41, 59, 0.7);
-      --bg-input: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --border-color: #475569;
-      --accent-primary: #22d3ee;
-      --accent-secondary: #a78bfa;
-      --accent-glow: rgba(34, 211, 238, 0.2);
-      --success-color: #4ade80;
-      --error-color: #f75569;
-      --warning-color: #facc15;
+      /* Palette inspired by a forest at dusk */
+      --bg-deep-forest: #1c2522;
+      --bg-mossy-stone: #2a3a35;
+      --bg-translucent-leaf: rgba(58, 78, 70, 0.6);
+      --bg-input: #23312c;
+      --text-light-creek: #e8edea;
+      --text-misty-fern: #93a89f;
+      --border-twig: #4a5d56;
+      --accent-river-blue: #67a2c8;
+      --accent-wildflower-purple: #a48ac3;
+      --glow-river-blue: rgba(103, 162, 200, 0.2);
+      --success-new-leaf: #78c49a;
+      --error-poppy-red: #e57373;
+      --warning-sunbeam-yellow: #fdd835;
     }
 
-    /* --- Global Styles & Background --- */
+    /* --- Keyframe Animations --- */
+    @keyframes background-pan {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes float-in {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 0 0 rgba(253, 216, 53, 0.5); }
+      70% { box-shadow: 0 0 0 12px rgba(253, 216, 53, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(253, 216, 53, 0); }
+    }
+    @keyframes ripple-loader {
+      0% { top: 48px; left: 48px; width: 0; height: 0; opacity: 1; }
+      100% { top: 0px; left: 0px; width: 96px; height: 96px; opacity: 0; }
+    }
+    @keyframes unfold {
+      from { max-height: 0; opacity: 0; transform: translateY(-10px); padding-top: 0; padding-bottom: 0; }
+      to { max-height: 500px; opacity: 1; transform: translateY(0); padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    }
+
+
+    /* --- Global Styles & Animated Background --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-primary);
+      font-family: 'Quicksand', sans-serif;
+      background-color: var(--bg-deep-forest);
+      color: var(--text-light-creek);
       padding: 2rem;
       min-height: 100vh;
-      background-image:
-          radial-gradient(circle at 15% 15%, var(--accent-secondary) 0%, transparent 25%),
-          radial-gradient(circle at 85% 75%, var(--accent-primary) 0%, transparent 25%);
-      background-attachment: fixed;
+      background: linear-gradient(135deg, var(--bg-deep-forest) 0%, #171f1d 50%, var(--bg-deep-forest) 100%);
+      background-size: 200% 200%;
+      animation: background-pan 30s ease infinite;
     }
 
     /* --- Main Layout --- */
-    .container { width: 100%; max-width: 1800px; margin: 0 auto; }
-    .main-content { display: flex; gap: 2rem; align-items: flex-start; }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 450px 1fr; gap: 2rem; }
+    .query-panel, .response-panel { animation: float-in 0.8s cubic-bezier(0.25, 1, 0.5, 1) both; }
+    .response-panel { animation-delay: 0.1s; }
+
     .query-panel {
-      flex: 0 0 550px;
       position: sticky;
       top: 2rem;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
+      align-self: start;
+      background: var(--bg-translucent-leaf);
+      border: 1px solid var(--border-twig);
+      border-radius: 24px;
       padding: 2rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex;
       flex-direction: column;
       gap: 2rem;
     }
-    .response-panel { flex: 1; min-width: 0; }
+
     @media (max-width: 1200px) {
-      .main-content { flex-direction: column; }
-      .query-panel { position: static; width: 100%; flex-basis: auto; }
+      .container { grid-template-columns: 1fr; }
+      .query-panel { position: static; width: 100%; }
     }
 
     /* --- Header --- */
-    .header { text-align: center; margin-bottom: 0; }
+    .header { text-align: center; }
     h1 {
-      font-size: 2.25em; font-weight: 700; letter-spacing: 1px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), #f472b6);
+      font-size: 2.5em; font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-river-blue), var(--accent-wildflower-purple));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
-    .header p { color: var(--text-secondary); font-size: 0.9em; }
+    .header p { color: var(--text-misty-fern); font-size: 1em; font-weight: 500; }
 
     /* --- Control Section Styling --- */
     .control-section {
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border: 1px solid var(--border-twig);
+      border-radius: 16px;
       padding: 1.5rem;
-      background-color: rgba(15, 23, 42, 0.5);
+      background-color: rgba(28, 37, 34, 0.4);
     }
     .section-title {
-      font-size: 0.8em;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85em; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-misty-fern); margin-bottom: 1.5rem; text-align: center;
     }
 
     /* --- Form Elements --- */
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.25rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     .form-group { position: relative; }
     label {
       display: block; font-weight: 500; margin-bottom: 0.5rem;
-      font-size: 0.9em; color: var(--text-secondary);
+      font-size: 0.9em; color: var(--text-misty-fern);
     }
     select, input[type="text"], textarea {
-      width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-input);
-      border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);
-      font-size: 1em; font-family: 'Roboto Mono', monospace; transition: all 0.2s ease-in-out;
+      width: 100%; padding: 0.85rem 1rem; background-color: var(--bg-input);
+      border: 1px solid var(--border-twig); border-radius: 12px; color: var(--text-light-creek);
+      font-size: 1em; font-family: 'Roboto Mono', monospace; transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     }
-    textarea { resize: vertical; min-height: 150px; }
+    textarea { resize: vertical; min-height: 120px; }
     select {
       -webkit-appearance: none; -moz-appearance: none; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2393a89f' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 1rem center;
     }
     select:focus, input[type="text"]:focus, textarea:focus {
-      outline: none; border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      outline: none; border-color: var(--accent-river-blue);
+      box-shadow: 0 0 0 3px var(--glow-river-blue), inset 0 2px 4px rgba(0,0,0,0.2);
     }
     .form-group.with-icon .icon {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      left: 1rem; color: var(--text-secondary);
+      position: absolute; top: 52%; transform: translateY(-50%);
+      left: 1rem; color: var(--text-misty-fern); pointer-events: none;
     }
     .form-group.with-icon input { padding-left: 2.75rem; }
-    .helper-text { font-size: 0.85em; color: var(--text-secondary); margin-top: 0.75rem; text-align: center; }
+    .helper-text { font-size: 0.85em; color: var(--text-misty-fern); margin-top: 0.75rem; text-align: center; }
 
-    /* --- Operation Switcher --- */
+    /* --- Operation Switcher (Pebble Design) --- */
     .operation-switcher {
-      display: flex; position: relative; background-color: var(--bg-input);
-      border-radius: 10px; padding: 4px; margin-bottom: 1.5rem;
+      display: flex; justify-content: space-between; gap: 8px; margin-bottom: 1.5rem;
     }
     .operation-switcher input[type="radio"] { display: none; }
     .operation-switcher label {
-      flex: 1; text-align: center; padding: 0.6rem 0; font-weight: 500;
-      color: var(--text-secondary); cursor: pointer; transition: color 0.3s ease;
-      z-index: 2; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      flex: 1; text-align: center; padding: 0.75rem 0.5rem; font-weight: 500;
+      color: var(--text-misty-fern); cursor: pointer; border-radius: 12px;
+      background-color: var(--bg-input); border: 1px solid var(--border-twig);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    .operation-switcher input[type="radio"]:checked + label { color: var(--text-primary); }
-    .switcher-selection {
-      position: absolute; top: 4px; height: calc(100% - 8px); width: calc((100% - 8px) / 3);
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 8px; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    .operation-switcher label:hover {
+      transform: translateY(-2px);
+      border-color: var(--text-misty-fern);
+      color: var(--text-light-creek);
     }
-    #op-get:checked ~ .switcher-selection { transform: translateX(0); }
-    #op-scan:checked ~ .switcher-selection { transform: translateX(100%); }
-    #op-upsert:checked ~ .switcher-selection { transform: translateX(200%); }
+    .operation-switcher input[type="radio"]:checked + label {
+      color: var(--bg-deep-forest);
+      background: linear-gradient(135deg, var(--accent-river-blue), var(--accent-wildflower-purple));
+      border-color: transparent;
+      transform: translateY(-2px) scale(1.02);
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(103, 162, 200, 0.25);
+    }
 
-    .operation-panel { animation: fadeInPanel 0.4s ease forwards; }
-    @keyframes fadeInPanel { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .operation-panel { animation: float-in 0.5s ease forwards; }
 
     /* --- Buttons & Actions --- */
     .actions-container { display: flex; }
     .btn {
-      width: 100%; padding: 0.85rem 1.25rem; border: 1px solid var(--border-color); border-radius: 8px;
-      background-color: transparent; color: var(--text-secondary); font-size: 1em; font-weight: 500;
-      font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.2s ease-in-out;
-      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+      width: 100%; padding: 1rem 1.25rem; border: 1px solid var(--border-twig);
+      border-radius: 14px; background-color: transparent; color: var(--text-misty-fern);
+      font-size: 1.1em; font-weight: 700; font-family: 'Quicksand', sans-serif; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; align-items: center;
+      justify-content: center; gap: 0.75rem;
     }
     .btn:hover, .btn:focus {
-      color: var(--text-primary); border-color: var(--accent-primary);
-      background-color: var(--accent-glow); transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      color: var(--text-light-creek); border-color: var(--accent-river-blue);
+      transform: translateY(-3px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
     .btn-primary {
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      color: var(--bg-dark); border: none; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-river-blue), var(--accent-wildflower-purple));
+      color: var(--bg-deep-forest); border: none;
     }
     .btn-primary:hover {
-      box-shadow: 0 6px 25px rgba(34, 211, 238, 0.3), 0 6px 25px rgba(167, 139, 250, 0.3);
-      transform: translateY(-3px); filter: brightness(1.1);
+      box-shadow: 0 6px 25px var(--glow-river-blue), 0 6px 25px rgba(164, 138, 195, 0.2);
+      transform: translateY(-4px) scale(1.02); filter: brightness(1.1);
     }
 
     /* --- Stats Display --- */
     #set-stats-container { margin-top: 1.5rem; }
-    #stats-trigger-btn {
-      width: 100%; border-style: dashed;
-      color: var(--text-secondary); font-size: 0.9em;
-    }
-    #stats-trigger-btn:hover { color: var(--accent-primary); }
-    #stats-content {
-      width: 100%; display: none; flex-direction: column;
-      align-items: center; justify-content: center; gap: 1rem;
-      padding-top: 1.25rem;
-    }
-    #stats-display-inner {
-      width: 100%; display: flex; justify-content: space-around;
-      align-items: center; flex-wrap: wrap; gap: 1rem;
-    }
-    .stat-item { text-align: center; }
-    .stat-item-label { font-size: 0.85em; color: var(--text-secondary); }
-    .stat-item-value { font-size: 1.2em; font-weight: 700; color: var(--accent-primary); }
+    #stats-trigger-btn { width: 100%; border-style: dashed; }
+    #stats-trigger-btn:hover { color: var(--accent-river-blue); }
+    #stats-content { display: none; padding-top: 1.25rem; }
+    #stats-display-inner { display: flex; justify-content: space-around; text-align: center; gap: 1rem; }
+    .stat-item-label { font-size: 0.85em; color: var(--text-misty-fern); font-weight: 500; }
+    .stat-item-value { font-size: 1.4em; font-weight: 700; color: var(--text-light-creek); letter-spacing: 1px; }
 
     /* --- Terminal / Output Panel --- */
     .output-terminal {
-      background: var(--bg-glass); border: 1px solid var(--border-color);
-      border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: var(--bg-translucent-leaf); border: 1px solid var(--border-twig);
+      border-radius: 24px; overflow: hidden; backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     .terminal-header {
-      background: rgba(15, 23, 42, 0.5); padding: 0.75rem 1.5rem; font-size: 0.8em;
-      color: var(--text-secondary); display: flex; align-items: center;
-      justify-content: space-between; border-bottom: 1px solid var(--border-color);
+      background: rgba(28, 37, 34, 0.5); padding: 1rem 1.5rem; font-size: 0.9em;
+      color: var(--text-misty-fern); display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid var(--border-twig);
     }
-    .terminal-title { display: flex; align-items: center; gap: 0.75rem; font-weight: 500; }
-    .terminal-actions { display: flex; gap: 0.5rem; }
-    .terminal-actions .btn { padding: 0.25rem 0.75rem; font-size: 0.8em; width: auto; }
+    .terminal-title { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; }
+    .terminal-actions .btn { padding: 0.5rem; width: auto; font-size: 0.9em; border-radius: 10px; }
 
     /* --- Status Indicators & Loaders --- */
-    #status-indicator { width: 10px; height: 10px; border-radius: 50%; background-color: #555; }
-    .status-waiting { background-color: var(--warning-color); animation: pulse 1.5s infinite; }
-    .status-success { background-color: var(--success-color); }
-    .status-error { background-color: var(--error-color); }
+    #status-indicator { width: 12px; height: 12px; border-radius: 50%; background-color: #555; transition: background-color 0.3s ease;}
+    .status-waiting { background-color: var(--warning-sunbeam-yellow); animation: pulse-glow 1.5s infinite; }
+    .status-success { background-color: var(--success-new-leaf); }
+    .status-error { background-color: var(--error-poppy-red); }
     #loader { display: none; justify-content: center; align-items: center; padding: 40px; min-height: 200px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background-color: var(--accent-primary); margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both; }
-    .dot-1 { animation-delay: -0.32s; }
-    .dot-2 { animation-delay: -0.16s; background-color: var(--accent-secondary); }
+    /* Nature-inspired ripple loader */
+    .ripple-container { width: 96px; height: 96px; position: relative; }
+    .ripple-container div {
+      position: absolute; border: 4px solid var(--accent-river-blue);
+      opacity: 1; border-radius: 50%; animation: ripple-loader 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+    .ripple-container div:nth-child(2) { animation-delay: -0.5s; }
 
     /* --- Response Data Display --- */
-    #output-container { min-height: 200px; max-height: 85vh; overflow-y: auto; padding: 1.5rem; font-size: 0.9em; }
-    #output-container:empty::before { content: "// System ready. Awaiting your command..."; color: var(--text-secondary); font-style: italic; }
+    #output-container { min-height: 200px; max-height: 80vh; overflow-y: auto; padding: 1.5rem; font-size: 0.9em; }
+    #output-container:empty::before { content: "// The forest is quiet... awaiting your query."; color: var(--text-misty-fern); font-style: italic; }
     .record-entry {
-      background-color: var(--bg-medium); border: 1px solid var(--border-color);
-      border-radius: 12px; margin-bottom: 1rem; animation: fadeIn 0.5s ease-out;
-      transition: box-shadow 0.3s ease; overflow: hidden;
+      background-color: var(--bg-mossy-stone); border: 1px solid var(--border-twig);
+      border-radius: 16px; margin-bottom: 1.25rem;
+      animation: float-in 0.5s ease-out forwards;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease; overflow: hidden;
     }
-    .record-entry:hover { box-shadow: 0 0 15px var(--accent-glow); border-color: rgba(34, 211, 238, 0.5); }
+    .record-entry:hover { box-shadow: 0 0 20px var(--glow-river-blue); border-color: var(--accent-river-blue); }
     .record-header {
       display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
-      padding: 0.75rem 1.25rem; list-style: none; cursor: pointer;
-      background: linear-gradient(90deg, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.8));
+      padding: 1rem 1.25rem; list-style: none; cursor: pointer;
+      background: linear-gradient(90deg, rgba(42, 58, 53, 0.8), rgba(58, 78, 70, 0.8));
     }
     .record-header::-webkit-details-marker { display: none; }
+    details[open] > .record-header { border-bottom: 1px solid var(--border-twig); }
 
-    /* --- MODIFIED: Record Header Info (Fixes Overflow) --- */
     .record-header-info {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      min-width: 0; /* CRITICAL FIX: Allows flex item to shrink properly */
+      flex-grow: 1; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0;
     }
     .record-key {
-      font-weight: 500; font-family: 'Roboto Mono', monospace; color: var(--accent-primary);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.1em;
+      font-weight: 700; font-family: 'Roboto Mono', monospace; color: var(--accent-river-blue);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.2em;
     }
     .record-meta-container { display: flex; flex-wrap: wrap; gap: 4px 1.5rem; }
-    .record-meta-item { font-size: 0.8em; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; }
+    .record-meta-item { font-size: 0.8em; color: var(--text-misty-fern); display: flex; align-items: center; gap: 0.5rem; }
 
     .record-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
     .record-actions .btn {
-      padding: 0.5rem; font-size: 0.9em; background: var(--bg-input);
-      color: var(--text-secondary); border-radius: 6px; width: auto;
+      padding: 0.5rem; font-size: 0.9em; background: var(--bg-input); color: var(--text-misty-fern);
+      border-radius: 8px; width: auto;
     }
-    .record-actions .btn:hover { color: var(--text-primary); }
-    .record-actions .btn.delete:hover { background-color: var(--error-color); border-color: var(--error-color); }
-    .record-actions .btn.copy-val:hover { background-color: var(--accent-primary); border-color: var(--accent-primary); }
-    .record-body { padding: 1.25rem; border-top: 1px solid var(--border-color); font-family: 'Roboto Mono', monospace; }
+    .record-actions .btn:hover { color: var(--text-light-creek); }
+    .record-actions .btn.delete:hover { background-color: var(--error-poppy-red); border-color: var(--error-poppy-red); }
+    .record-actions .btn.copy-val:hover { background-color: var(--accent-river-blue); border-color: var(--accent-river-blue); }
+
+    .record-body {
+      padding: 1.5rem; font-family: 'Roboto Mono', monospace; overflow: hidden;
+    }
+    details[open] > .record-body { animation: unfold 0.4s ease-out; }
 
     /* --- JSON Viewer Styling --- */
-    .json-viewer { font-size: 0.9em; line-height: 1.6; }
-    .json-viewer ul { list-style: none; padding-left: 2em; border-left: 1px solid var(--border-color); }
-    .json-viewer details { border-left: 1px solid transparent; }
-    .json-viewer summary { cursor: pointer; display: inline-block; }
-    .json-viewer .json-brace { color: var(--text-secondary); }
-    .json-viewer .json-key { color: var(--accent-secondary); }
-    .json-viewer .json-string { color: #a5f3fc; }
-    .json-viewer .json-number { color: #f9a8d4; }
-    .json-viewer .json-boolean { color: #fde047; }
-    .json-viewer .json-null { color: #6b7280; }
+    .json-viewer { font-size: 0.9em; line-height: 1.7; }
+    .json-viewer ul { list-style: none; padding-left: 2em; border-left: 1px solid var(--border-twig); }
+    .json-viewer summary { cursor: pointer; display: inline-block; user-select: none; }
+    .json-viewer summary::before { content: '▸ '; display: inline-block; transform: rotate(0); transition: transform 0.2s; }
+    .json-viewer details[open] > summary::before { transform: rotate(90deg); }
+    .json-viewer .json-brace { color: var(--text-misty-fern); }
+    .json-viewer .json-key { color: var(--accent-wildflower-purple); }
+    .json-viewer .json-string { color: #a5d6a7; } /* Soft green */
+    .json-viewer .json-number { color: #f06292; } /* Soft pink */
+    .json-viewer .json-boolean { color: #ffd54f; } /* Soft yellow */
+    .json-viewer .json-null { color: #78909c; } /* Slate gray */
 
-    /* --- REDESIGNED: Pagination --- */
+    /* --- Pagination --- */
     .pagination-controls {
       display: flex; justify-content: center; align-items: center;
-      padding: 1rem; gap: 0.75rem;
-      border-top: 1px solid var(--border-color);
-      background: rgba(15, 23, 42, 0.5);
+      padding: 1rem; gap: 0.75rem; border-top: 1px solid var(--border-twig);
+      background: rgba(28, 37, 34, 0.5);
     }
     .pagination-controls .btn {
-      width: 36px; height: 36px;
-      padding: 0; font-size: 1em;
-      border: none; border-radius: 50%;
-      background-color: transparent;
-      color: var(--text-secondary);
+      width: 40px; height: 40px; padding: 0; font-size: 1em;
+      border: 1px solid var(--border-twig); border-radius: 50%;
     }
-    .pagination-controls .btn:hover {
-      background-color: var(--bg-input);
-      color: var(--text-primary);
-      transform: translateY(0);
-      box-shadow: none;
-    }
-    .pagination-controls .btn[disabled] {
-      opacity: 0.4; cursor: not-allowed; background: transparent;
-    }
-    .pagination-info { font-size: 0.9em; color: var(--text-primary); font-weight: 500; margin: 0 0.5rem; }
+    .pagination-controls .btn:hover { background-color: var(--bg-mossy-stone); transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .pagination-controls .btn[disabled] { opacity: 0.4; cursor: not-allowed; background: transparent; transform: none; box-shadow: none; }
+    .pagination-info { font-size: 1em; color: var(--text-light-creek); font-weight: 500; margin: 0 0.5rem; }
 
-
-    /* --- Keyframe Animations --- */
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); } 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); } }
-    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body onload="resetSetStats()">
 
 <div class="container">
-  <main class="main-content">
-    <div class="query-panel">
-      <header class="header"><h1>Aerospike Nexus</h1><p>Data Command & Control Interface</p></header>
+  <aside class="query-panel">
+    <header class="header"><h1>Aerospike Nexus</h1><p>Grove Interface</p></header>
 
-      <div class="control-section">
-        <h2 class="section-title">DATA SOURCE</h2>
-        <div class="form-grid">
-          <div class="form-group"><label for="env">Environment</label><select id="env"><option value="PREPROD">PREPROD</option><option value="PROD">PROD</option></select></div>
-          <div class="form-group"><label for="namespace">Namespace</label><select id="namespace"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
-          <div class="form-group"><label for="set">Set</label><select id="set" onchange="resetSetStats()"><option value="defaultPage">defaultPage</option><option value="staticPackage">staticPackage</option><option value="origami-user-page">origami-user-page</option></select></div>
-        </div>
-        <div id="set-stats-container">
-          <button id="stats-trigger-btn" class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-gauge-high"></i> Show Set Statistics</button>
-          <div id="stats-content"></div>
-        </div>
+    <div class="control-section">
+      <h2 class="section-title">Data Source</h2>
+      <div class="form-grid">
+        <div class="form-group"><label for="env">Environment</label><select id="env"><option value="PREPROD">PREPROD</option><option value="PROD">PROD</option></select></div>
+        <div class="form-group"><label for="namespace">Namespace</label><select id="namespace"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
+        <div class="form-group"><label for="set">Set</label><select id="set" onchange="resetSetStats()"><option value="defaultPage">defaultPage</option><option value="staticPackage">staticPackage</option><option value="origami-user-page">origami-user-page</option></select></div>
       </div>
-
-      <div class="control-section">
-        <h2 class="section-title">OPERATION</h2>
-        <div class="operation-switcher">
-          <input type="radio" id="op-get" name="operation" value="get" checked onchange="switchOperation(this.value)">
-          <label for="op-get"><i class="fa-solid fa-key"></i> Get</label>
-          <input type="radio" id="op-scan" name="operation" value="scan" onchange="switchOperation(this.value)">
-          <label for="op-scan"><i class="fa-solid fa-magnifying-glass"></i> Scan</label>
-          <input type="radio" id="op-upsert" name="operation" value="upsert" onchange="switchOperation(this.value)">
-          <label for="op-upsert"><i class="fa-solid fa-pen-to-square"></i> Upsert</label>
-          <div class="switcher-selection"></div>
-        </div>
-
-        <div id="operation-panels">
-          <div class="operation-panel" id="panel-get">
-            <div class="form-group with-icon">
-              <i class="fa-solid fa-hashtag icon"></i>
-              <input type="text" id="key" placeholder="Enter Primary Key...">
-            </div>
-          </div>
-          <div class="operation-panel" id="panel-scan" style="display:none;">
-            <div class="form-group with-icon">
-              <i class="fa-solid fa-star-of-life icon"></i>
-              <input type="text" id="prefix" placeholder="Enter Key Prefix (optional)">
-            </div>
-            <p class="helper-text">Leave blank to scan all records in the set.</p>
-          </div>
-          <div class="operation-panel" id="panel-upsert" style="display:none;">
-            <div class="form-group with-icon">
-              <i class="fa-solid fa-hashtag icon"></i>
-              <input type="text" id="upsert-key" placeholder="Enter Primary Key...">
-            </div>
-            <div class="form-group">
-              <label>Record Data (JSON)</label>
-              <textarea id="data" placeholder='{ "binName": "binValue" }'></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="actions-container">
-        <button id="execute-btn" class="btn btn-primary" onclick="handleQuery()"><i class="fa-solid fa-bolt-lightning"></i> Get Record</button>
+      <div id="set-stats-container">
+        <button id="stats-trigger-btn" class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-tree"></i> Show Set Statistics</button>
+        <div id="stats-content"></div>
       </div>
     </div>
 
-    <div class="response-panel">
-      <div class="output-terminal">
-        <div class="terminal-header">
-          <span class="terminal-title"><div id="status-indicator"></div>RESPONSE LOG</span>
-          <div class="terminal-actions">
-            <button class="btn" onclick="toggleAllDetails(true)" title="Expand All"><i class="fa-solid fa-arrows-down-to-line"></i></button>
-            <button class="btn" onclick="toggleAllDetails(false)" title="Collapse All"><i class="fa-solid fa-arrows-up-to-line"></i></button>
-            <button id="copy-all-btn" class="btn" onclick="copyAllResponses()" title="Copy All Responses"><i class="fa-solid fa-copy"></i> Copy All</button>
+    <div class="control-section">
+      <h2 class="section-title">Operation</h2>
+      <div class="operation-switcher">
+        <input type="radio" id="op-get" name="operation" value="get" checked onchange="switchOperation(this.value)">
+        <label for="op-get"><i class="fa-solid fa-leaf"></i> Get</label>
+        <input type="radio" id="op-scan" name="operation" value="scan" onchange="switchOperation(this.value)">
+        <label for="op-scan"><i class="fa-solid fa-water"></i> Scan</label>
+        <input type="radio" id="op-upsert" name="operation" value="upsert" onchange="switchOperation(this.value)">
+        <label for="op-upsert"><i class="fa-solid fa-seedling"></i> Upsert</label>
+      </div>
+
+      <div id="operation-panels">
+        <div class="operation-panel" id="panel-get">
+          <div class="form-group with-icon">
+            <i class="fa-solid fa-key icon"></i>
+            <input type="text" id="key" placeholder="Enter Primary Key...">
           </div>
         </div>
-        <div id="loader"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div></div>
-        <div id="output-container"></div>
-        <div id="pagination-container" class="pagination-controls"></div>
+        <div class="operation-panel" id="panel-scan" style="display:none;">
+          <div class="form-group with-icon">
+            <i class="fa-solid fa-stream icon"></i>
+            <input type="text" id="prefix" placeholder="Enter Key Prefix (optional)">
+          </div>
+          <p class="helper-text">Leave blank to scan all records in the set.</p>
+        </div>
+        <div class="operation-panel" id="panel-upsert" style="display:none;">
+          <div class="form-group with-icon">
+            <i class="fa-solid fa-key icon"></i>
+            <input type="text" id="upsert-key" placeholder="Enter Primary Key...">
+          </div>
+          <div class="form-group">
+            <label>Record Data (JSON)</label>
+            <textarea id="data" placeholder='{ "binName": "binValue" }'></textarea>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <div class="actions-container">
+      <button id="execute-btn" class="btn btn-primary" onclick="handleQuery()"><i class="fa-solid fa-feather"></i> Get Record</button>
+    </div>
+  </aside>
+
+  <main class="response-panel">
+    <div class="output-terminal">
+      <div class="terminal-header">
+        <span class="terminal-title"><div id="status-indicator"></div>RESPONSE LOG</span>
+        <div class="terminal-actions">
+          <button class="btn" onclick="toggleAllDetails(true)" title="Expand All"><i class="fa-solid fa-angles-down"></i></button>
+          <button class="btn" onclick="toggleAllDetails(false)" title="Collapse All"><i class="fa-solid fa-angles-up"></i></button>
+          <button id="copy-all-btn" class="btn" onclick="copyAllResponses()" title="Copy All Responses"><i class="fa-solid fa-copy"></i></button>
+        </div>
+      </div>
+      <div id="loader">
+        <div class="ripple-container"><div></div><div></div></div>
+      </div>
+      <div id="output-container"></div>
+      <div id="pagination-container" class="pagination-controls"></div>
     </div>
   </main>
 </div>
+
 
 <script>
   // --- Constants ---
@@ -403,9 +409,9 @@
     operationPanels[op].style.display = 'block';
 
     switch (op) {
-      case 'get': executeBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Get Record'; break;
-      case 'scan': executeBtn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Scan Set'; break;
-      case 'upsert': executeBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Record'; break;
+      case 'get': executeBtn.innerHTML = '<i class="fa-solid fa-feather"></i> Get Record'; break;
+      case 'scan': executeBtn.innerHTML = '<i class="fa-solid fa-wind"></i> Scan Set'; break;
+      case 'upsert': executeBtn.innerHTML = '<i class="fa-solid fa-pen-nib"></i> Save Record'; break;
     }
   }
 
@@ -421,7 +427,7 @@
     const statsContent = document.getElementById('stats-content');
     triggerBtn.style.display = 'none';
     statsContent.style.display = 'flex';
-    statsContent.innerHTML = `<div id="set-stats-loader" style="display: flex; justify-content: center; align-items: center; padding: 10px;"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div></div>`;
+    statsContent.innerHTML = `<div id="set-stats-loader" style="width:100%; display: flex; justify-content: center; align-items: center; padding: 10px;"><div class="ripple-container"><div></div><div></div></div></div>`;
 
     try {
       const res = await fetch(`/aerospike/getStats`, {
@@ -437,7 +443,7 @@
             <div class="stat-item"><div class="stat-item-label">Device Usage</div><div class="stat-item-value">${formatBytes(data.deviceUsedBytes)}</div></div>
           </div>`;
     } catch (error) {
-      statsContent.innerHTML = `<div class="stat-item"><div class="stat-item-label" style="color: var(--error-color);">Error</div><div class="stat-item-value">Failed to fetch.</div></div>`;
+      statsContent.innerHTML = `<div class="stat-item"><div class="stat-item-label" style="color: var(--error-poppy-red);">Error</div><div class="stat-item-value">Failed to fetch.</div></div>`;
       console.error("Stats fetch error:", error);
     }
   }
@@ -482,7 +488,7 @@
       if (endpoint === 'save' && dataInput) request.data = JSON.parse(dataInput);
     } catch (e) {
       statusIndicator.className = 'status-error';
-      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color)">// INVALID JSON\n${e.message}</div></div>`;
+      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-poppy-red)">// INVALID JSON\n${e.message}</div></div>`;
       loader.style.display = 'none'; outputContainer.style.display = 'block'; return;
     }
 
@@ -502,7 +508,7 @@
       }
     } catch (error) {
       statusIndicator.className = 'status-error';
-      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color)">// REQUEST FAILED\n${error.message}</div></div>`;
+      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-poppy-red)">// REQUEST FAILED\n${error.message}</div></div>`;
       console.error("Fetch error:", error);
     } finally {
       loader.style.display = 'none'; outputContainer.style.display = 'block';
@@ -536,13 +542,12 @@
     const { ttl = -1, values, size = 0 } = data;
     recordDataStore[key] = values;
 
-    // UPDATED HTML structure for robustness
     recordEntry.innerHTML = `
         <summary class="record-header">
             <div class="record-header-info">
                 <div class="record-key" title="${key}">${key}</div>
                 <div class="record-meta-container">
-                    <span class="record-meta-item" title="Time To Live"><i class="fa-solid fa-clock fa-fw"></i> ${formatTTL(ttl)}</span>
+                    <span class="record-meta-item" title="Time To Live"><i class="fa-solid fa-hourglass-half fa-fw"></i> ${formatTTL(ttl)}</span>
                     <span class="record-meta-item" title="Record Size"><i class="fa-solid fa-database fa-fw"></i> ${formatBytes(size)}</span>
                 </div>
             </div>
@@ -562,7 +567,6 @@
     const prevDisabled = (currentPage === 1) ? 'disabled' : '';
     const nextDisabled = (currentPage === totalPages) ? 'disabled' : '';
 
-    // UPDATED with Font Awesome Icons
     container.innerHTML = `
         <button class="btn" onclick="goToPage(1)" ${prevDisabled} title="First Page"><i class="fa-solid fa-angles-left"></i></button>
         <button class="btn" onclick="goToPage(${currentPage - 1})" ${prevDisabled} title="Previous Page"><i class="fa-solid fa-chevron-left"></i></button>
@@ -601,7 +605,7 @@
         const isArray = Array.isArray(value); const keys = Object.keys(value);
         if (keys.length === 0) return isArray ? '[]' : '{}';
         const details = document.createElement('details'); details.open = true;
-        const summary = document.createElement('summary'); summary.innerHTML = `<span class="json-brace">${isArray ? '[' : '{'}</span>`;
+        const summary = document.createElement('summary'); summary.innerHTML = `<span class="json-brace">${isArray ? '[' : '{'}</span>...`;
         details.appendChild(summary);
         const list = document.createElement('ul');
         for (const key of keys) { const item = document.createElement('li'); const keyHtml = isArray ? '' : `<span class="json-key">"${key}"</span>: `; item.innerHTML = keyHtml + processValue(value[key]); list.appendChild(item); }
