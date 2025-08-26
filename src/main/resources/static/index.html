@@ -441,7 +441,7 @@
     const recordEntry = document.createElement('details');
     recordEntry.className = `record-entry`;
     recordEntry.id = `record-${key}`;
-    recordEntry.open = false; // Open by default
+    recordEntry.open = false;
 
     const { ttl = -1, values, size = 0 } = data;
     recordDataStore[key] = values;
