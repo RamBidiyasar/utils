@@ -1,621 +1,428 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" data-theme="woods"> <head>
   <meta charset="UTF-8">
-  <title>Aerospike Nexus | Grove UI</title>
+  <title>Aerospike Nexus | Themed UI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Nunito+Sans:wght@400;600;700&family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+  <script>
+    // This script runs early to prevent a "flash" of the wrong theme.
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'woods'; // Default to 'woods'
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
   <style>
-    /* --- GROVE THEME - NATURE INSPIRED UI --- */
+    /* --- THEME DEFINITIONS --- */
     :root {
-      /* Palette inspired by a forest at dusk */
-      --bg-deep-forest: #1c2522;
-      --bg-mossy-stone: #2a3a35;
-      --bg-translucent-leaf: rgba(58, 78, 70, 0.6);
-      --bg-input: #23312c;
-      --text-light-creek: #e8edea;
-      --text-misty-fern: #93a89f;
-      --border-twig: #4a5d56;
-      --accent-river-blue: #67a2c8;
-      --accent-wildflower-purple: #a48ac3;
-      --glow-river-blue: rgba(103, 162, 200, 0.2);
-      --success-new-leaf: #78c49a;
-      --error-poppy-red: #e57373;
-      --warning-sunbeam-yellow: #fdd835;
+      /* Smooth transition for theme switching */
+      transition: background-color 0.5s ease, color 0.5s ease;
     }
 
-    /* --- Keyframe Animations --- */
-    @keyframes background-pan {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* == WHISPERING WOODS THEME == */
+    [data-theme="woods"] {
+      --font-heading: 'Merriweather', serif; --font-body: 'Nunito Sans', sans-serif; --font-mono: 'Roboto Mono', monospace;
+      --bg-primary: #1c2522; --bg-secondary: #223c37; --bg-panel: rgba(42, 58, 53, 0.7); --bg-element: #2d423d;
+      --panel-border: rgba(160, 191, 179, 0.2); --text-primary: #e8edea; --text-secondary: #93a89f;
+      --accent-primary: #67a2c8; --accent-secondary: #a48ac3; --accent-primary-glow: rgba(103, 162, 200, 0.2);
+      --accent-secondary-glow: rgba(164, 138, 195, 0.2); --error-color: #e57373; --success-color: #78c49a;
+      --json-key: #a48ac3; --json-string: #a5d6a7; --json-number: #f06292; --json-boolean: #ffd54f; --json-null: #78909c;
     }
-    @keyframes float-in {
-      from { opacity: 0; transform: translateY(25px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    /* == FUTURE AURORA THEME == */
+    [data-theme="aurora"] {
+      --font-heading: 'Inter', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'Roboto Mono', monospace;
+      --bg-primary: #0f172a; --bg-secondary: #0f172a; --bg-panel: rgba(30, 41, 59, 0.7); --bg-element: #334155;
+      --panel-border: #475569; --text-primary: #f8fafc; --text-secondary: #94a3b8;
+      --accent-primary: #22d3ee; --accent-secondary: #a78bfa; --accent-primary-glow: rgba(34, 211, 238, 0.2);
+      --accent-secondary-glow: rgba(167, 139, 250, 0.2); --error-color: #f75569; --success-color: #4ade80;
+      --json-key: #a78bfa; --json-string: #a5f3fc; --json-number: #f9a8d4; --json-boolean: #fde047; --json-null: #6b7280;
     }
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 0 0 rgba(253, 216, 53, 0.5); }
-      70% { box-shadow: 0 0 0 12px rgba(253, 216, 53, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(253, 216, 53, 0); }
+
+    /* == CRIMSON NIGHT THEME == */
+    [data-theme="crimson"] {
+      --font-heading: 'Inter', sans-serif; --font-body: 'Nunito Sans', sans-serif; --font-mono: 'Fira Code', monospace;
+      --bg-primary: #121212; --bg-secondary: #1a1a1a; --bg-panel: rgba(28, 28, 28, 0.7); --bg-element: #2c2c2c;
+      --panel-border: rgba(255, 255, 255, 0.15); --text-primary: #f5f5f5; --text-secondary: #a0a0a0;
+      --accent-primary: #e53935; --accent-secondary: #fdd835; --accent-primary-glow: rgba(229, 57, 53, 0.2);
+      --accent-secondary-glow: rgba(253, 216, 53, 0.15); --error-color: #e57373; --success-color: #a5d6a7;
+      --json-key: #fdd835; --json-string: #c5e1a5; --json-number: #ff8a65; --json-boolean: #e53935; --json-null: #757575;
     }
-    @keyframes ripple-loader {
-      0% { top: 48px; left: 48px; width: 0; height: 0; opacity: 1; }
-      100% { top: 0px; left: 0px; width: 96px; height: 96px; opacity: 0; }
+
+    /* == OCEANIC DEPTHS THEME == */
+    [data-theme="oceanic"] {
+      --font-heading: 'Merriweather', serif; --font-body: 'Nunito Sans', sans-serif; --font-mono: 'Fira Code', monospace;
+      --bg-primary: #001f3f; --bg-secondary: #002b54; --bg-panel: rgba(0, 31, 63, 0.75); --bg-element: #00305b;
+      --panel-border: rgba(127, 219, 255, 0.2); --text-primary: #f0f8ff; --text-secondary: #88a5bf;
+      --accent-primary: #7FDBFF; --accent-secondary: #39CCCC; --accent-primary-glow: rgba(127, 219, 255, 0.15);
+      --accent-secondary-glow: rgba(57, 204, 204, 0.2); --error-color: #FF4136; --success-color: #2ECC40;
+      --json-key: #39CCCC; --json-string: #F012BE; --json-number: #7FDBFF; --json-boolean: #FFDC00; --json-null: #88a5bf;
     }
-    @keyframes unfold {
-      from { max-height: 0; opacity: 0; transform: translateY(-10px); padding-top: 0; padding-bottom: 0; }
-      to { max-height: 500px; opacity: 1; transform: translateY(0); padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+    /* == MONOKAI PRO THEME == */
+    [data-theme="monokai"] {
+      --font-heading: 'Inter', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'Fira Code', monospace;
+      --bg-primary: #2D2A2E; --bg-secondary: #221f22; --bg-panel: rgba(45, 42, 46, 0.7); --bg-element: #403e41;
+      --panel-border: #59575a; --text-primary: #FCFCFA; --text-secondary: #9D9C9E;
+      --accent-primary: #FF6188; --accent-secondary: #A9DC76; --accent-primary-glow: rgba(255, 97, 136, 0.2);
+      --accent-secondary-glow: rgba(169, 220, 118, 0.2); --error-color: #FF6188; --success-color: #A9DC76;
+      --json-key: #FFD866; --json-string: #A9DC76; --json-number: #AB9DF2; --json-boolean: #FF6188; --json-null: #9D9C9E;
+    }
+
+    /* == SOLARIZED LIGHT THEME == */
+    [data-theme="solarized"] {
+      --font-heading: 'Nunito Sans', sans-serif; --font-body: 'Nunito Sans', sans-serif; --font-mono: 'Roboto Mono', monospace;
+      --bg-primary: #fdf6e3; --bg-secondary: #f5efdc; --bg-panel: rgba(245, 239, 220, 0.7); --bg-element: #eee8d5;
+      --panel-border: #dcd7c8; --text-primary: #586e75; --text-secondary: #839496;
+      --accent-primary: #268bd2; --accent-secondary: #859900; --accent-primary-glow: rgba(38, 139, 210, 0.15);
+      --accent-secondary-glow: rgba(133, 153, 0, 0.15); --error-color: #dc322f; --success-color: #859900;
+      --json-key: #b58900; --json-string: #2aa198; --json-number: #d33682; --json-boolean: #cb4b16; --json-null: #93a1a1;
     }
 
 
-    /* --- Global Styles & Animated Background --- */
+    /* --- GLOBAL & STRUCTURAL STYLES (Theme-Agnostic) --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
     body {
-      font-family: 'Quicksand', sans-serif;
-      background-color: var(--bg-deep-forest);
-      color: var(--text-light-creek);
+      font-family: var(--font-body);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       padding: 2rem;
       min-height: 100vh;
-      background: linear-gradient(135deg, var(--bg-deep-forest) 0%, #171f1d 50%, var(--bg-deep-forest) 100%);
+      background: linear-gradient(120deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
       background-size: 200% 200%;
       animation: background-pan 30s ease infinite;
     }
 
-    /* --- Main Layout --- */
-    .container { width: 100%; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 450px 1fr; gap: 2rem; }
-    .query-panel, .response-panel { animation: float-in 0.8s cubic-bezier(0.25, 1, 0.5, 1) both; }
-    .response-panel { animation-delay: 0.1s; }
+    .container { width: 100%; max-width: 1800px; margin: 0 auto; }
+    .main-content { display: flex; gap: 2rem; align-items: flex-start; }
 
     .query-panel {
+      flex: 0 0 480px;
       position: sticky;
       top: 2rem;
-      align-self: start;
-      background: var(--bg-translucent-leaf);
-      border: 1px solid var(--border-twig);
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
     }
+    .response-panel { flex: 1; min-width: 0; }
 
     @media (max-width: 1200px) {
-      .container { grid-template-columns: 1fr; }
-      .query-panel { position: static; width: 100%; }
+      .main-content { flex-direction: column; }
+      .query-panel { position: static; width: 100%; flex-basis: auto; max-height: none; }
     }
 
-    /* --- Header --- */
-    .header { text-align: center; }
-    h1 {
-      font-size: 2.5em; font-weight: 700;
-      background: linear-gradient(90deg, var(--accent-river-blue), var(--accent-wildflower-purple));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 0.25rem;
+    .query-panel, .output-terminal {
+      background: var(--bg-panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: background-color 0.5s ease, border-color 0.5s ease;
     }
-    .header p { color: var(--text-misty-fern); font-size: 1em; font-weight: 500; }
+    .query-panel { padding: 2.5rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
-    /* --- Control Section Styling --- */
-    .control-section {
-      border: 1px solid var(--border-twig);
-      border-radius: 16px;
-      padding: 1.5rem;
-      background-color: rgba(28, 37, 34, 0.4);
+    /* --- HEADER & THEME SELECTOR FIX --- */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1rem;
     }
-    .section-title {
-      font-size: 0.85em; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--text-misty-fern); margin-bottom: 1.5rem; text-align: center;
+    .header-main {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
     }
-
-    /* --- Form Elements --- */
-    .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-    .form-group { position: relative; }
-    label {
-      display: block; font-weight: 500; margin-bottom: 0.5rem;
-      font-size: 0.9em; color: var(--text-misty-fern);
-    }
-    select, input[type="text"], textarea {
-      width: 100%; padding: 0.85rem 1rem; background-color: var(--bg-input);
-      border: 1px solid var(--border-twig); border-radius: 12px; color: var(--text-light-creek);
-      font-size: 1em; font-family: 'Roboto Mono', monospace; transition: all 0.3s ease;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-    }
-    textarea { resize: vertical; min-height: 120px; }
-    select {
-      -webkit-appearance: none; -moz-appearance: none; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2393a89f' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 1rem center;
-    }
-    select:focus, input[type="text"]:focus, textarea:focus {
-      outline: none; border-color: var(--accent-river-blue);
-      box-shadow: 0 0 0 3px var(--glow-river-blue), inset 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .form-group.with-icon .icon {
-      position: absolute; top: 52%; transform: translateY(-50%);
-      left: 1rem; color: var(--text-misty-fern); pointer-events: none;
-    }
-    .form-group.with-icon input { padding-left: 2.75rem; }
-    .helper-text { font-size: 0.85em; color: var(--text-misty-fern); margin-top: 0.75rem; text-align: center; }
-
-    /* --- Operation Switcher (Pebble Design) --- */
-    .operation-switcher {
-      display: flex; justify-content: space-between; gap: 8px; margin-bottom: 1.5rem;
-    }
-    .operation-switcher input[type="radio"] { display: none; }
-    .operation-switcher label {
-      flex: 1; text-align: center; padding: 0.75rem 0.5rem; font-weight: 500;
-      color: var(--text-misty-fern); cursor: pointer; border-radius: 12px;
-      background-color: var(--bg-input); border: 1px solid var(--border-twig);
-      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .operation-switcher label:hover {
-      transform: translateY(-2px);
-      border-color: var(--text-misty-fern);
-      color: var(--text-light-creek);
-    }
-    .operation-switcher input[type="radio"]:checked + label {
-      color: var(--bg-deep-forest);
-      background: linear-gradient(135deg, var(--accent-river-blue), var(--accent-wildflower-purple));
-      border-color: transparent;
-      transform: translateY(-2px) scale(1.02);
+    .header-main h1 {
+      font-family: var(--font-heading);
+      font-size: 2.5em;
       font-weight: 700;
-      box-shadow: 0 5px 15px rgba(103, 162, 200, 0.25);
+      color: var(--text-primary);
+      text-shadow: 0 0 15px var(--accent-primary-glow);
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .header-main p {
+      color: var(--text-secondary);
+      font-size: 1em;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .theme-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-element);
+      padding: 0.4rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid var(--panel-border);
+      width: 100%;
+      justify-content: center;
+    }
+    .theme-selector label { color: var(--text-secondary); }
+    .theme-selector select {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.9em;
+      width: 100%;
+      text-align: center;
+    }
+    .theme-selector select:focus { outline: none; }
+    @media(max-width: 480px) {
+      .header-main { flex-direction: column; gap: 0.25rem; }
+      .header-main p { text-align: center; }
     }
 
-    .operation-panel { animation: float-in 0.5s ease forwards; }
 
-    /* --- Buttons & Actions --- */
-    .actions-container { display: flex; }
-    .btn {
-      width: 100%; padding: 1rem 1.25rem; border: 1px solid var(--border-twig);
-      border-radius: 14px; background-color: transparent; color: var(--text-misty-fern);
-      font-size: 1.1em; font-weight: 700; font-family: 'Quicksand', sans-serif; cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; align-items: center;
-      justify-content: center; gap: 0.75rem;
-    }
-    .btn:hover, .btn:focus {
-      color: var(--text-light-creek); border-color: var(--accent-river-blue);
-      transform: translateY(-3px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-river-blue), var(--accent-wildflower-purple));
-      color: var(--bg-deep-forest); border: none;
-    }
-    .btn-primary:hover {
-      box-shadow: 0 6px 25px var(--glow-river-blue), 0 6px 25px rgba(164, 138, 195, 0.2);
-      transform: translateY(-4px) scale(1.02); filter: brightness(1.1);
-    }
+    /* --- The rest of the CSS is theme-agnostic and uses the generic variables --- */
+    .control-section { padding: 1.5rem; border: 1px solid var(--panel-border); border-radius: 16px; background-color: rgba(0,0,0,0.1); }
+    .section-title { font-family: var(--font-heading); font-weight: 400; font-size: 0.9em; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; padding-bottom: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--panel-border); text-align: center; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.6rem; font-size: 0.9em; color: var(--text-secondary); }
+    select, input[type="text"], textarea { width: 100%; padding: 0.8rem 1rem; background-color: var(--bg-element); border: 1px solid var(--panel-border); border-radius: 10px; color: var(--text-primary); font-size: 1em; font-family: var(--font-body); transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+    textarea { resize: vertical; min-height: 150px; }
+    select:focus, input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 0 3px var(--accent-primary-glow); }
+    .operation-switcher { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .operation-switcher input[type="radio"] { display: none; }
+    .operation-switcher label { padding: 0.75rem 1.5rem; background: var(--bg-element); border: 1px solid var(--panel-border); border-radius: 30px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .operation-switcher label:hover { transform: translateY(-3px); color: var(--text-primary); border-color: var(--accent-secondary); }
+    .operation-switcher input[type="radio"]:checked + label { background: var(--accent-secondary); color: var(--bg-primary); font-weight: 700; border-color: var(--accent-secondary); box-shadow: 0 5px 15px var(--accent-secondary-glow); transform: translateY(-3px); }
+    .operation-panel, .query-panel-content, .response-panel { animation: float-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; } .response-panel { animation-delay: 0.2s; } @keyframes float-in { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .operation-panel { animation: fadeInPanel 0.5s ease forwards; } @keyframes fadeInPanel { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .actions-container { display: flex; margin-top: auto; }
+    .btn { padding: 0.85rem 1.25rem; border: 1px solid var(--panel-border); border-radius: 10px; background-color: transparent; color: var(--text-secondary); font-size: 1em; font-weight: 600; font-family: var(--font-body); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .btn:hover:not(:disabled) { transform: translateY(-3px); color: var(--text-primary); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .btn-primary { width: 100%; background: var(--accent-primary); color: var(--bg-primary); border-color: var(--accent-primary); font-weight: 700; box-shadow: 0 5px 20px var(--accent-primary-glow); }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 8px 30px var(--accent-primary-glow); transform: translateY(-4px); }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px 2px var(--accent-primary-glow); } 50% { box-shadow: 0 0 15px 5px var(--accent-primary-glow); } }
+    #status-indicator { width: 10px; height: 10px; border-radius: 50%; background-color: var(--text-secondary); transition: background-color 0.5s ease; }
+    .status-waiting { background-color: var(--accent-primary); animation: pulse-glow 2s infinite; }
+    .status-success { background-color: var(--success-color); box-shadow: 0 0 8px var(--accent-secondary-glow); }
+    .status-error { background-color: var(--error-color); }
+    @keyframes ripple { 0% { transform: scale(.1); opacity: 1; } 70% { transform: scale(1); opacity: 0; } 100% { opacity: 0; } }
+    #loader { display: none; justify-content: center; align-items: center; padding: 40px; min-height: 200px; position: relative; }
+    .ripple-dot { position: absolute; width: 80px; height: 80px; border: 4px solid var(--accent-primary); border-radius: 50%; animation: ripple 1.5s cubic-bezier(0, .2, .8, 1) infinite; }
+    .ripple-dot:nth-child(2) { animation-delay: -0.75s; }
+    .output-terminal { overflow: hidden; }
+    #output-container { min-height: 200px; max-height: calc(100vh - 12rem); overflow-y: auto; padding: 1.5rem; }
+    #output-container:empty::before { content: "// System ready. Awaiting your command..."; color: var(--text-secondary); font-style: italic; }
+    .record-entry { background-color: var(--bg-element); border: 1px solid transparent; border-radius: 15px; margin-bottom: 1rem; animation: fadeInRecord 0.5s ease-out forwards; transition: all 0.3s ease; overflow: hidden; }
+    @keyframes fadeInRecord { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .record-entry[open], .record-entry:hover { border-color: var(--panel-border); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); }
+    .record-header { padding: 1rem 1.25rem; }
+    .record-key { color: var(--accent-primary); }
 
-    /* --- Stats Display --- */
+    /* --- JSON VIEWER ENHANCEMENT --- */
+    .json-viewer { font-family: var(--font-mono); line-height: 1.7; }
+    .json-viewer ul { list-style: none; padding-left: 2em; border-left: 1px solid var(--panel-border); }
+    .json-viewer details { border-left: 1px solid transparent; }
+    .json-viewer summary { cursor: pointer; display: inline-block; user-select: none; }
+    .json-viewer summary::-webkit-details-marker { display: none; }
+    .json-viewer summary::before { content: '▸'; display: inline-block; transform: rotate(0); transition: transform 0.2s; margin-right: 0.5em; }
+    .json-viewer details[open] > summary::before { transform: rotate(90deg); }
+    .json-viewer .json-brace { color: var(--text-secondary); } .json-viewer .json-key { color: var(--json-key); } .json-viewer .json-string { color: var(--json-string); } .json-viewer .json-number { color: var(--json-number); } .json-viewer .json-boolean { color: var(--json-boolean); } .json-viewer .json-null { color: var(--json-null); }
+
+    #stats-trigger-btn:hover { border-color: var(--accent-secondary); }
+    .stat-item-value { color: var(--accent-secondary); }
+    .record-actions .btn.delete:hover { background-color: var(--error-color); border-color: var(--error-color); color: #fff; }
+    .record-actions .btn.copy-val:hover { background-color: var(--accent-primary); border-color: var(--accent-primary); color: var(--bg-primary); }
+    .pagination-controls .btn:hover:not(:disabled) { background-color: var(--bg-element); color: var(--text-primary); }
+    .terminal-header { background: rgba(0, 0, 0, 0.1); padding: 0.8rem 1.5rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--panel-border); }
+    .terminal-title { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; font-family: var(--font-heading); }
+    .record-entry[open] > .record-body { padding: 1.25rem; border-top: 1px solid var(--panel-border); }
+    .form-group.with-icon .icon { position: absolute; top: 52%; transform: translateY(-50%); left: 1rem; color: var(--text-secondary); pointer-events: none; }
+    .form-group.with-icon input { padding-left: 2.75rem; }
+    .helper-text { font-size: 0.9em; color: var(--text-secondary); margin-top: 1rem; text-align: center; }
     #set-stats-container { margin-top: 1.5rem; }
     #stats-trigger-btn { width: 100%; border-style: dashed; }
-    #stats-trigger-btn:hover { color: var(--accent-river-blue); }
     #stats-content { display: none; padding-top: 1.25rem; }
-    #stats-display-inner { display: flex; justify-content: space-around; text-align: center; gap: 1rem; }
-    .stat-item-label { font-size: 0.85em; color: var(--text-misty-fern); font-weight: 500; }
-    .stat-item-value { font-size: 1.4em; font-weight: 700; color: var(--text-light-creek); letter-spacing: 1px; }
-
-    /* --- Terminal / Output Panel --- */
-    .output-terminal {
-      background: var(--bg-translucent-leaf); border: 1px solid var(--border-twig);
-      border-radius: 24px; overflow: hidden; backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    .terminal-header {
-      background: rgba(28, 37, 34, 0.5); padding: 1rem 1.5rem; font-size: 0.9em;
-      color: var(--text-misty-fern); display: flex; align-items: center;
-      justify-content: space-between; border-bottom: 1px solid var(--border-twig);
-    }
-    .terminal-title { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; }
-    .terminal-actions .btn { padding: 0.5rem; width: auto; font-size: 0.9em; border-radius: 10px; }
-
-    /* --- Status Indicators & Loaders --- */
-    #status-indicator { width: 12px; height: 12px; border-radius: 50%; background-color: #555; transition: background-color 0.3s ease;}
-    .status-waiting { background-color: var(--warning-sunbeam-yellow); animation: pulse-glow 1.5s infinite; }
-    .status-success { background-color: var(--success-new-leaf); }
-    .status-error { background-color: var(--error-poppy-red); }
-    #loader { display: none; justify-content: center; align-items: center; padding: 40px; min-height: 200px; }
-    /* Nature-inspired ripple loader */
-    .ripple-container { width: 96px; height: 96px; position: relative; }
-    .ripple-container div {
-      position: absolute; border: 4px solid var(--accent-river-blue);
-      opacity: 1; border-radius: 50%; animation: ripple-loader 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-    }
-    .ripple-container div:nth-child(2) { animation-delay: -0.5s; }
-
-    /* --- Response Data Display --- */
-    #output-container { min-height: 200px; max-height: 80vh; overflow-y: auto; padding: 1.5rem; font-size: 0.9em; }
-    #output-container:empty::before { content: "// The forest is quiet... awaiting your query."; color: var(--text-misty-fern); font-style: italic; }
-    .record-entry {
-      background-color: var(--bg-mossy-stone); border: 1px solid var(--border-twig);
-      border-radius: 16px; margin-bottom: 1.25rem;
-      animation: float-in 0.5s ease-out forwards;
-      transition: box-shadow 0.3s ease, border-color 0.3s ease; overflow: hidden;
-    }
-    .record-entry:hover { box-shadow: 0 0 20px var(--glow-river-blue); border-color: var(--accent-river-blue); }
-    .record-header {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
-      padding: 1rem 1.25rem; list-style: none; cursor: pointer;
-      background: linear-gradient(90deg, rgba(42, 58, 53, 0.8), rgba(58, 78, 70, 0.8));
-    }
-    .record-header::-webkit-details-marker { display: none; }
-    details[open] > .record-header { border-bottom: 1px solid var(--border-twig); }
-
-    .record-header-info {
-      flex-grow: 1; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0;
-    }
-    .record-key {
-      font-weight: 700; font-family: 'Roboto Mono', monospace; color: var(--accent-river-blue);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.2em;
-    }
+    #stats-display-inner { width: 100%; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; }
+    .stat-item { text-align: center; } .stat-item-label { font-size: 0.9em; color: var(--text-secondary); } .stat-item-value { font-size: 1.3em; font-weight: 700; }
+    .record-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; list-style: none; cursor: pointer; }
+    .record-header-info { flex-grow: 1; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+    .record-key { font-weight: 600; font-family: var(--font-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.1em; }
     .record-meta-container { display: flex; flex-wrap: wrap; gap: 4px 1.5rem; }
-    .record-meta-item { font-size: 0.8em; color: var(--text-misty-fern); display: flex; align-items: center; gap: 0.5rem; }
-
+    .record-meta-item { font-size: 0.85em; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; }
     .record-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-    .record-actions .btn {
-      padding: 0.5rem; font-size: 0.9em; background: var(--bg-input); color: var(--text-misty-fern);
-      border-radius: 8px; width: auto;
-    }
-    .record-actions .btn:hover { color: var(--text-light-creek); }
-    .record-actions .btn.delete:hover { background-color: var(--error-poppy-red); border-color: var(--error-poppy-red); }
-    .record-actions .btn.copy-val:hover { background-color: var(--accent-river-blue); border-color: var(--accent-river-blue); }
-
-    .record-body {
-      padding: 1.5rem; font-family: 'Roboto Mono', monospace; overflow: hidden;
-    }
-    details[open] > .record-body { animation: unfold 0.4s ease-out; }
-
-    /* --- JSON Viewer Styling --- */
-    .json-viewer { font-size: 0.9em; line-height: 1.7; }
-    .json-viewer ul { list-style: none; padding-left: 2em; border-left: 1px solid var(--border-twig); }
-    .json-viewer summary { cursor: pointer; display: inline-block; user-select: none; }
-    .json-viewer summary::before { content: '▸ '; display: inline-block; transform: rotate(0); transition: transform 0.2s; }
-    .json-viewer details[open] > summary::before { transform: rotate(90deg); }
-    .json-viewer .json-brace { color: var(--text-misty-fern); }
-    .json-viewer .json-key { color: var(--accent-wildflower-purple); }
-    .json-viewer .json-string { color: #a5d6a7; } /* Soft green */
-    .json-viewer .json-number { color: #f06292; } /* Soft pink */
-    .json-viewer .json-boolean { color: #ffd54f; } /* Soft yellow */
-    .json-viewer .json-null { color: #78909c; } /* Slate gray */
-
-    /* --- Pagination --- */
-    .pagination-controls {
-      display: flex; justify-content: center; align-items: center;
-      padding: 1rem; gap: 0.75rem; border-top: 1px solid var(--border-twig);
-      background: rgba(28, 37, 34, 0.5);
-    }
-    .pagination-controls .btn {
-      width: 40px; height: 40px; padding: 0; font-size: 1em;
-      border: 1px solid var(--border-twig); border-radius: 50%;
-    }
-    .pagination-controls .btn:hover { background-color: var(--bg-mossy-stone); transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .pagination-controls .btn[disabled] { opacity: 0.4; cursor: not-allowed; background: transparent; transform: none; box-shadow: none; }
-    .pagination-info { font-size: 1em; color: var(--text-light-creek); font-weight: 500; margin: 0 0.5rem; }
+    .record-actions .btn { padding: 0.5rem; font-size: 0.9em; background: var(--bg-panel); color: var(--text-secondary); border-radius: 8px; width: auto; }
+    .record-actions .btn:hover { color: var(--text-primary); border-color: var(--panel-border); }
+    .record-body { padding: 0; }
+    .pagination-controls { display: flex; justify-content: center; align-items: center; padding: 1rem; gap: 0.75rem; border-top: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.1); }
+    .pagination-controls .btn { width: 40px; height: 40px; padding: 0; font-size: 1em; border-radius: 50%; }
+    .pagination-controls .btn[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; background: transparent; }
+    .pagination-info { font-size: 0.9em; color: var(--text-primary); font-weight: 600; margin: 0 0.5rem; }
+    .terminal-actions { display: flex; gap: 0.5rem; }
+    .terminal-actions .btn { padding: 0.4rem 0.8rem; font-size: 0.8em; border-radius: 8px; }
 
   </style>
 </head>
-<body onload="resetSetStats()">
+<body>
 
 <div class="container">
-  <aside class="query-panel">
-    <header class="header"><h1>Aerospike Nexus</h1><p>Grove Interface</p></header>
+  <main class="main-content">
+    <aside class="query-panel">
+      <div class="query-panel-content">
+        <header class="header">
+          <div class="header-main">
+            <h1>Aerospike Nexus</h1>
+            <p>Data Interface</p>
+          </div>
+          <div class="theme-selector">
+            <label for="theme-switch" title="Change Theme"><i class="fa-solid fa-palette"></i></label>
+            <select id="theme-switch">
+              <option value="woods">Whispering Woods</option>
+              <option value="aurora">Future Aurora</option>
+              <option value="crimson">Crimson Night</option>
+              <option value="oceanic">Oceanic Depths</option>
+              <option value="monokai">Monokai Pro</option>
+              <option value="solarized">Solarized Light</option>
+            </select>
+          </div>
+        </header>
 
-    <div class="control-section">
-      <h2 class="section-title">Data Source</h2>
-      <div class="form-grid">
-        <div class="form-group"><label for="env">Environment</label><select id="env"><option value="PREPROD">PREPROD</option><option value="PROD">PROD</option></select></div>
-        <div class="form-group"><label for="namespace">Namespace</label><select id="namespace"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
-        <div class="form-group"><label for="set">Set</label><select id="set" onchange="resetSetStats()"><option value="defaultPage">defaultPage</option><option value="staticPackage">staticPackage</option><option value="origami-user-page">origami-user-page</option></select></div>
-      </div>
-      <div id="set-stats-container">
-        <button id="stats-trigger-btn" class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-tree"></i> Show Set Statistics</button>
-        <div id="stats-content"></div>
-      </div>
-    </div>
-
-    <div class="control-section">
-      <h2 class="section-title">Operation</h2>
-      <div class="operation-switcher">
-        <input type="radio" id="op-get" name="operation" value="get" checked onchange="switchOperation(this.value)">
-        <label for="op-get"><i class="fa-solid fa-leaf"></i> Get</label>
-        <input type="radio" id="op-scan" name="operation" value="scan" onchange="switchOperation(this.value)">
-        <label for="op-scan"><i class="fa-solid fa-water"></i> Scan</label>
-        <input type="radio" id="op-upsert" name="operation" value="upsert" onchange="switchOperation(this.value)">
-        <label for="op-upsert"><i class="fa-solid fa-seedling"></i> Upsert</label>
-      </div>
-
-      <div id="operation-panels">
-        <div class="operation-panel" id="panel-get">
-          <div class="form-group with-icon">
-            <i class="fa-solid fa-key icon"></i>
-            <input type="text" id="key" placeholder="Enter Primary Key...">
+        <div class="control-section">
+          <h2 class="section-title">Data Source</h2>
+          <div class="form-grid">
+            <div class="form-group"><label for="env">Environment</label><select id="env"><option value="PREPROD">PREPROD</option><option value="PROD">PROD</option></select></div>
+            <div class="form-group"><label for="namespace">Namespace</label><select id="namespace"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
+            <div class="form-group"><label for="set">Set</label><select id="set" onchange="resetSetStats()"><option value="defaultPage">defaultPage</option><option value="staticPackage">staticPackage</option><option value="origami-user-page">origami-user-page</option></select></div>
+          </div>
+          <div id="set-stats-container">
+            <button id="stats-trigger-btn" class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-tree"></i> Show Set Statistics</button>
+            <div id="stats-content"></div>
           </div>
         </div>
-        <div class="operation-panel" id="panel-scan" style="display:none;">
-          <div class="form-group with-icon">
-            <i class="fa-solid fa-stream icon"></i>
-            <input type="text" id="prefix" placeholder="Enter Key Prefix (optional)">
-          </div>
-          <p class="helper-text">Leave blank to scan all records in the set.</p>
-        </div>
-        <div class="operation-panel" id="panel-upsert" style="display:none;">
-          <div class="form-group with-icon">
-            <i class="fa-solid fa-key icon"></i>
-            <input type="text" id="upsert-key" placeholder="Enter Primary Key...">
-          </div>
-          <div class="form-group">
-            <label>Record Data (JSON)</label>
-            <textarea id="data" placeholder='{ "binName": "binValue" }'></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="actions-container">
-      <button id="execute-btn" class="btn btn-primary" onclick="handleQuery()"><i class="fa-solid fa-feather"></i> Get Record</button>
-    </div>
-  </aside>
+        <div class="control-section">
+          <h2 class="section-title">Operation</h2>
+          <div class="operation-switcher">
+            <input type="radio" id="op-get" name="operation" value="get" checked onchange="switchOperation(this.value)">
+            <label for="op-get"><i class="fa-solid fa-leaf"></i> Get</label>
+            <input type="radio" id="op-scan" name="operation" value="scan" onchange="switchOperation(this.value)">
+            <label for="op-scan"><i class="fa-solid fa-water"></i> Scan</label>
+            <input type="radio" id="op-upsert" name="operation" value="upsert" onchange="switchOperation(this.value)">
+            <label for="op-upsert"><i class="fa-solid fa-seedling"></i> Upsert</label>
+          </div>
 
-  <main class="response-panel">
-    <div class="output-terminal">
-      <div class="terminal-header">
-        <span class="terminal-title"><div id="status-indicator"></div>RESPONSE LOG</span>
-        <div class="terminal-actions">
-          <button class="btn" onclick="toggleAllDetails(true)" title="Expand All"><i class="fa-solid fa-angles-down"></i></button>
-          <button class="btn" onclick="toggleAllDetails(false)" title="Collapse All"><i class="fa-solid fa-angles-up"></i></button>
-          <button id="copy-all-btn" class="btn" onclick="copyAllResponses()" title="Copy All Responses"><i class="fa-solid fa-copy"></i></button>
+          <div id="operation-panels">
+            <div class="operation-panel" id="panel-get"> <div class="form-group with-icon"> <i class="fa-solid fa-key icon"></i> <input type="text" id="key" placeholder="Enter Primary Key..."> </div> </div>
+            <div class="operation-panel" id="panel-scan" style="display:none;"> <div class="form-group with-icon"> <i class="fa-solid fa-stream icon"></i> <input type="text" id="prefix" placeholder="Enter Key Prefix (optional)"> </div> <p class="helper-text">Leave blank to scan all records.</p> </div>
+            <div class="operation-panel" id="panel-upsert" style="display:none;"> <div class="form-group with-icon"> <i class="fa-solid fa-key icon"></i> <input type="text" id="upsert-key" placeholder="Enter Primary Key..."> </div> <div class="form-group"> <label>Record Data (JSON)</label> <textarea id="data" placeholder='{ "binName": "binValue" }'></textarea> </div> </div>
+          </div>
+        </div>
+
+        <div class="actions-container">
+          <button id="execute-btn" class="btn btn-primary" onclick="handleQuery()"><i class="fa-solid fa-feather"></i> Get Record</button>
         </div>
       </div>
-      <div id="loader">
-        <div class="ripple-container"><div></div><div></div></div>
+    </aside>
+
+    <main class="response-panel">
+      <div class="output-terminal">
+        <div class="terminal-header"> <span class="terminal-title"><div id="status-indicator"></div>RESPONSE LOG</span> <div class="terminal-actions"> <button class="btn" onclick="toggleAllDetails(true)" title="Expand All"><i class="fa-solid fa-angles-down"></i></button> <button class="btn" onclick="toggleAllDetails(false)" title="Collapse All"><i class="fa-solid fa-angles-up"></i></button> <button id="copy-all-btn" class="btn" onclick="copyAllResponses()" title="Copy All Responses"><i class="fa-solid fa-copy"></i></button> </div> </div>
+        <div id="loader"><div class="ripple-container"><div class="ripple-dot"></div><div class="ripple-dot"></div></div></div>
+        <div id="output-container"></div>
+        <div id="pagination-container" class="pagination-controls"></div>
       </div>
-      <div id="output-container"></div>
-      <div id="pagination-container" class="pagination-controls"></div>
-    </div>
+    </main>
   </main>
 </div>
 
-
 <script>
-  // --- Constants ---
-  const outputContainer = document.getElementById('output-container');
-  const loader = document.getElementById('loader');
-  const statusIndicator = document.getElementById('status-indicator');
-  const executeBtn = document.getElementById('execute-btn');
-  const operationPanels = {
-    get: document.getElementById('panel-get'),
-    scan: document.getElementById('panel-scan'),
-    upsert: document.getElementById('panel-upsert')
-  };
+  // --- THEME SWITCHER LOGIC ---
+  const themeSwitch = document.getElementById('theme-switch');
+  function switchTheme(themeName) { document.documentElement.setAttribute('data-theme', themeName); localStorage.setItem('theme', themeName); }
+  themeSwitch.addEventListener('change', (e) => { switchTheme(e.target.value); });
+  document.addEventListener('DOMContentLoaded', () => { const currentTheme = localStorage.getItem('theme') || 'woods'; themeSwitch.value = currentTheme; });
 
-  // --- State ---
-  let recordDataStore = {};
-  let currentPage = 1;
-  let totalPages = 1;
-
-  // --- UI Logic ---
-  function switchOperation(op) {
-    Object.values(operationPanels).forEach(p => p.style.display = 'none');
-    operationPanels[op].style.display = 'block';
-
-    switch (op) {
-      case 'get': executeBtn.innerHTML = '<i class="fa-solid fa-feather"></i> Get Record'; break;
-      case 'scan': executeBtn.innerHTML = '<i class="fa-solid fa-wind"></i> Scan Set'; break;
-      case 'upsert': executeBtn.innerHTML = '<i class="fa-solid fa-pen-nib"></i> Save Record'; break;
-    }
-  }
-
-  function resetSetStats() {
-    document.getElementById('stats-content').style.display = 'none';
-    document.getElementById('stats-content').innerHTML = '';
-    document.getElementById('stats-trigger-btn').style.display = 'block';
-  }
-
-  // --- Core Application Logic ---
-  async function fetchSetStats() {
-    const triggerBtn = document.getElementById('stats-trigger-btn');
-    const statsContent = document.getElementById('stats-content');
-    triggerBtn.style.display = 'none';
-    statsContent.style.display = 'flex';
-    statsContent.innerHTML = `<div id="set-stats-loader" style="width:100%; display: flex; justify-content: center; align-items: center; padding: 10px;"><div class="ripple-container"><div></div><div></div></div></div>`;
-
-    try {
-      const res = await fetch(`/aerospike/getStats`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ env: document.getElementById("env").value, namespace: document.getElementById("namespace").value, set: document.getElementById("set").value })
-      });
-      if (!res.ok) throw new Error('Failed to fetch stats');
-      const data = await res.json();
-      statsContent.innerHTML = `
-          <div id="stats-display-inner">
-            <div class="stat-item"><div class="stat-item-label">Total Records</div><div class="stat-item-value">${data.recordCount.toLocaleString()}</div></div>
-            <div class="stat-item"><div class="stat-item-label">Memory Usage</div><div class="stat-item-value">${formatBytes(data.memoryUsedBytes)}</div></div>
-            <div class="stat-item"><div class="stat-item-label">Device Usage</div><div class="stat-item-value">${formatBytes(data.deviceUsedBytes)}</div></div>
-          </div>`;
-    } catch (error) {
-      statsContent.innerHTML = `<div class="stat-item"><div class="stat-item-label" style="color: var(--error-poppy-red);">Error</div><div class="stat-item-value">Failed to fetch.</div></div>`;
-      console.error("Stats fetch error:", error);
-    }
-  }
-
-  function handleQuery() {
-    currentPage = 1;
-    const activeOp = document.querySelector('input[name="operation"]:checked').value;
-
-    switch (activeOp) {
-      case 'get':
-        if (document.getElementById("key").value.trim()) send('fetch');
-        else alert('Primary Key cannot be empty for a GET operation.');
-        break;
-      case 'scan':
-        const prefix = document.getElementById("prefix").value.trim();
-        if (prefix) send('searchByPrefix'); else send('fetchAll');
-        break;
-      case 'upsert':
-        const upsertKey = document.getElementById("upsert-key").value.trim();
-        if (upsertKey) {
-          document.getElementById("key").value = upsertKey;
-          send('save');
-        } else {
-          alert('Primary Key cannot be empty for an UPSERT operation.');
-        }
-        break;
-    }
-  }
-
-  async function send(endpoint) {
-    loader.style.display = 'flex';
-    outputContainer.style.display = 'none';
-    statusIndicator.className = 'status-waiting';
-    const request = {
-      env: document.getElementById("env").value, namespace: document.getElementById("namespace").value,
-      set: document.getElementById("set").value, key: document.getElementById("key").value.trim(),
-      prefix: document.getElementById("prefix").value.trim(), data: {}, page: currentPage
-    };
-
-    try {
-      const dataInput = document.getElementById("data").value.trim();
-      if (endpoint === 'save' && dataInput) request.data = JSON.parse(dataInput);
-    } catch (e) {
-      statusIndicator.className = 'status-error';
-      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-poppy-red)">// INVALID JSON\n${e.message}</div></div>`;
-      loader.style.display = 'none'; outputContainer.style.display = 'block'; return;
-    }
-
-    try {
-      const res = await fetch(`/aerospike/${endpoint}`, {
-        method: (endpoint === 'delete') ? 'DELETE' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
-      });
-      if (!res.ok) { const errorText = await res.text(); throw new Error(`HTTP ${res.status}: ${res.statusText}\n${errorText}`); }
-      statusIndicator.className = 'status-success';
-      const contentType = res.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
-        renderResponse(await res.json(), request.key);
-      } else {
-        renderResponse(await res.text());
-      }
-    } catch (error) {
-      statusIndicator.className = 'status-error';
-      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-poppy-red)">// REQUEST FAILED\n${error.message}</div></div>`;
-      console.error("Fetch error:", error);
-    } finally {
-      loader.style.display = 'none'; outputContainer.style.display = 'block';
-    }
-  }
-
-  // --- Rendering & Utility Functions ---
-  function renderResponse(response, key = '') {
-    outputContainer.innerHTML = ''; recordDataStore = {};
-    document.getElementById('pagination-container').innerHTML = '';
-    if (response && typeof response.records === 'object') {
-      const { records, totalPages: total, currentPage: current } = response;
-      totalPages = total; currentPage = current;
-      const entries = Object.entries(records);
-      if (entries.length === 0) {
-        outputContainer.innerHTML = `<div class="record-entry"><div class="record-body">// No records found for this query.</div></div>`;
-      } else {
-        entries.forEach(([recordKey, recordData]) => createRecordCard(recordKey, recordData));
-      }
-      renderPaginationControls();
-    } else if (response && 'values' in response) {
-      createRecordCard(key, response);
-    } else {
-      outputContainer.innerHTML = `<div class="record-entry"><div class="record-body">${response.toString()}</div></div>`;
-    }
-  }
-
-  function createRecordCard(key, data) {
-    const recordEntry = document.createElement('details');
-    recordEntry.className = `record-entry`; recordEntry.id = `record-${key}`;
-    const { ttl = -1, values, size = 0 } = data;
-    recordDataStore[key] = values;
-
-    recordEntry.innerHTML = `
-        <summary class="record-header">
-            <div class="record-header-info">
-                <div class="record-key" title="${key}">${key}</div>
-                <div class="record-meta-container">
-                    <span class="record-meta-item" title="Time To Live"><i class="fa-solid fa-hourglass-half fa-fw"></i> ${formatTTL(ttl)}</span>
-                    <span class="record-meta-item" title="Record Size"><i class="fa-solid fa-database fa-fw"></i> ${formatBytes(size)}</span>
-                </div>
-            </div>
-            <div class="record-actions">
-                <button class="btn copy-val" onclick="copyRecordValue(event, '${key}')" title="Copy value JSON"><i class="fa-regular fa-copy"></i></button>
-                <button class="btn delete" onclick="deleteRecord(event, '${key}')" title="Delete this record"><i class="fa-solid fa-trash-can"></i></button>
-            </div>
-        </summary>
-        <div class="record-body"></div>`;
-    recordEntry.querySelector('.record-body').appendChild(createJsonViewer(values));
-    outputContainer.appendChild(recordEntry);
-  }
-
-  function renderPaginationControls() {
-    const container = document.getElementById('pagination-container');
-    if (totalPages <= 1) { container.innerHTML = ''; return; }
-    const prevDisabled = (currentPage === 1) ? 'disabled' : '';
-    const nextDisabled = (currentPage === totalPages) ? 'disabled' : '';
-
-    container.innerHTML = `
-        <button class="btn" onclick="goToPage(1)" ${prevDisabled} title="First Page"><i class="fa-solid fa-angles-left"></i></button>
-        <button class="btn" onclick="goToPage(${currentPage - 1})" ${prevDisabled} title="Previous Page"><i class="fa-solid fa-chevron-left"></i></button>
-        <span class="pagination-info">Page ${currentPage} of ${totalPages}</span>
-        <button class="btn" onclick="goToPage(${currentPage + 1})" ${nextDisabled} title="Next Page"><i class="fa-solid fa-chevron-right"></i></button>
-        <button class="btn" onclick="goToPage(${totalPages})" ${nextDisabled} title="Last Page"><i class="fa-solid fa-angles-right"></i></button>`;
-  }
-
-  function goToPage(pageNumber) {
-    if (pageNumber < 1 || pageNumber > totalPages || pageNumber === currentPage) return;
-    currentPage = pageNumber;
-    if(document.getElementById("prefix").value.trim()) { send('searchByPrefix'); } else { send('fetchAll'); }
-  }
-
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes'; const k = 1024; const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']; const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
+  // --- ALL PREVIOUS FUNCTIONALITY REMAINS UNCHANGED ---
+  const outputContainer = document.getElementById('output-container'); const loader = document.getElementById('loader'); const statusIndicator = document.getElementById('status-indicator'); const executeBtn = document.getElementById('execute-btn'); const operationPanels = { get: document.getElementById('panel-get'), scan: document.getElementById('panel-scan'), upsert: document.getElementById('panel-upsert') }; let recordDataStore = {}; let currentPage = 1; let totalPages = 1;
+  function switchOperation(op) { Object.values(operationPanels).forEach(p => p.style.display = 'none'); operationPanels[op].style.display = 'block'; switch (op) { case 'get': executeBtn.innerHTML = '<i class="fa-solid fa-feather"></i> Get Record'; break; case 'scan': executeBtn.innerHTML = '<i class="fa-solid fa-wind"></i> Scan Set'; break; case 'upsert': executeBtn.innerHTML = '<i class="fa-solid fa-pen-nib"></i> Save Record'; break; } }
+  function resetSetStats() { document.getElementById('stats-content').style.display = 'none'; document.getElementById('stats-content').innerHTML = ''; document.getElementById('stats-trigger-btn').style.display = 'block'; }
+  async function fetchSetStats() { const triggerBtn = document.getElementById('stats-trigger-btn'); const statsContent = document.getElementById('stats-content'); triggerBtn.style.display = 'none'; statsContent.style.display = 'flex'; statsContent.innerHTML = `<div id="set-stats-loader" style="width:100%; display: flex; justify-content: center; align-items: center; padding: 10px;"><div class="ripple-container"><div class="ripple-dot"></div><div class="ripple-dot"></div></div></div>`; try { const res = await fetch(`/aerospike/getStats`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ env: document.getElementById("env").value, namespace: document.getElementById("namespace").value, set: document.getElementById("set").value }) }); if (!res.ok) throw new Error('Failed to fetch stats'); const data = await res.json(); statsContent.innerHTML = ` <div id="stats-display-inner"> <div class="stat-item"><div class="stat-item-label">Total Records</div><div class="stat-item-value">${data.recordCount.toLocaleString()}</div></div> <div class="stat-item"><div class="stat-item-label">Memory Usage</div><div class="stat-item-value">${formatBytes(data.memoryUsedBytes)}</div></div> <div class="stat-item"><div class="stat-item-label">Device Usage</div><div class="stat-item-value">${formatBytes(data.deviceUsedBytes)}</div></div> </div>`; } catch (error) { statsContent.innerHTML = `<div class="stat-item"><div class="stat-item-label" style="color: var(--error-color);">Error</div><div class="stat-item-value">Failed to fetch.</div></div>`; console.error("Stats fetch error:", error); } }
+  function handleQuery() { currentPage = 1; const activeOp = document.querySelector('input[name="operation"]:checked').value; switch (activeOp) { case 'get': if (document.getElementById("key").value.trim()) send('fetch'); else alert('Primary Key cannot be empty for a GET operation.'); break; case 'scan': const prefix = document.getElementById("prefix").value.trim(); if (prefix) send('searchByPrefix'); else send('fetchAll'); break; case 'upsert': const upsertKey = document.getElementById("upsert-key").value.trim(); if (upsertKey) { document.getElementById("key").value = upsertKey; send('save'); } else { alert('Primary Key cannot be empty for an UPSERT operation.'); } break; } }
+  async function send(endpoint) { loader.style.display = 'flex'; outputContainer.style.display = 'none'; statusIndicator.className = 'status-waiting'; const request = { env: document.getElementById("env").value, namespace: document.getElementById("namespace").value, set: document.getElementById("set").value, key: document.getElementById("key").value.trim(), prefix: document.getElementById("prefix").value.trim(), data: {}, page: currentPage }; try { const dataInput = document.getElementById("data").value.trim(); if (endpoint === 'save' && dataInput) request.data = JSON.parse(dataInput); } catch (e) { statusIndicator.className = 'status-error'; outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color); padding: 1rem;">// INVALID JSON\n${e.message}</div></div>`; loader.style.display = 'none'; outputContainer.style.display = 'block'; return; } try { const res = await fetch(`/aerospike/${endpoint}`, { method: (endpoint === 'delete') ? 'DELETE' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request) }); if (!res.ok) { const errorText = await res.text(); throw new Error(`HTTP ${res.status}: ${res.statusText}\n${errorText}`); } statusIndicator.className = 'status-success'; const contentType = res.headers.get("content-type"); if (contentType?.includes("application/json")) { renderResponse(await res.json(), request.key); } else { renderResponse(await res.text()); } } catch (error) { statusIndicator.className = 'status-error'; outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="color: var(--error-color); padding: 1rem;">// REQUEST FAILED\n${error.message}</div></div>`; console.error("Fetch error:", error); } finally { loader.style.display = 'none'; outputContainer.style.display = 'block'; } }
+  function renderResponse(response, key = '') { outputContainer.innerHTML = ''; recordDataStore = {}; document.getElementById('pagination-container').innerHTML = ''; if (response && typeof response.records === 'object') { const { records, totalPages: total, currentPage: current } = response; totalPages = total; currentPage = current; const entries = Object.entries(records); if (entries.length === 0) { outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="padding: 1rem;">// No records found for this query.</div></div>`; } else { entries.forEach(([recordKey, recordData]) => createRecordCard(recordKey, recordData)); } renderPaginationControls(); } else if (response && 'values' in response) { createRecordCard(key, response); } else { outputContainer.innerHTML = `<div class="record-entry"><div class="record-body" style="padding: 1rem;">${response.toString()}</div></div>`; } }
+  function createRecordCard(key, data) { const recordEntry = document.createElement('details'); recordEntry.className = `record-entry`; recordEntry.id = `record-${key}`; const { ttl = -1, values, size = 0 } = data; recordDataStore[key] = values; recordEntry.innerHTML = ` <summary class="record-header"> <div class="record-header-info"> <div class="record-key" title="${key}">${key}</div> <div class="record-meta-container"> <span class="record-meta-item" title="Time To Live"><i class="fa-solid fa-hourglass-half fa-fw"></i> ${formatTTL(ttl)}</span> <span class="record-meta-item" title="Record Size"><i class="fa-solid fa-database fa-fw"></i> ${formatBytes(size)}</span> </div> </div> <div class="record-actions"> <button class="btn copy-val" onclick="copyRecordValue(event, '${key}')" title="Copy value JSON"><i class="fa-regular fa-copy"></i></button> <button class="btn delete" onclick="deleteRecord(event, '${key}')" title="Delete this record"><i class="fa-solid fa-trash-can"></i></button> </div> </summary> <div class="record-body"></div>`; recordEntry.querySelector('.record-body').appendChild(createJsonViewer(values)); outputContainer.appendChild(recordEntry); }
+  function renderPaginationControls() { const container = document.getElementById('pagination-container'); if (totalPages <= 1) { container.innerHTML = ''; return; } const prevDisabled = (currentPage === 1) ? 'disabled' : ''; const nextDisabled = (currentPage === totalPages) ? 'disabled' : ''; container.innerHTML = ` <button class="btn" onclick="goToPage(1)" ${prevDisabled} title="First Page"><i class="fa-solid fa-angles-left"></i></button> <button class="btn" onclick="goToPage(${currentPage - 1})" ${prevDisabled} title="Previous Page"><i class="fa-solid fa-chevron-left"></i></button> <span class="pagination-info">Page ${currentPage} of ${totalPages}</span> <button class="btn" onclick="goToPage(${currentPage + 1})" ${nextDisabled} title="Next Page"><i class="fa-solid fa-chevron-right"></i></button> <button class="btn" onclick="goToPage(${totalPages})" ${nextDisabled} title="Last Page"><i class="fa-solid fa-angles-right"></i></button>`; }
+  function goToPage(pageNumber) { if (pageNumber < 1 || pageNumber > totalPages || pageNumber === currentPage) return; currentPage = pageNumber; if(document.getElementById("prefix").value.trim()) { send('searchByPrefix'); } else { send('fetchAll'); } }
+  function formatBytes(bytes, decimals = 2) { if (bytes === 0) return '0 Bytes'; const k = 1024; const dm = decimals < 0 ? 0 : decimals; const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]; }
   function formatTTL(seconds) { if (seconds <= 0) return 'Never'; if (seconds < 60) return `< 1m`; const d = Math.floor(seconds / (3600 * 24)); const h = Math.floor(seconds % (3600 * 24) / 3600); const m = Math.floor(seconds % 3600 / 60); return `${d > 0 ? d + 'd ' : ''}${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'm' : ''}`.trim(); }
-  function toggleAllDetails(expand) { document.querySelectorAll('#output-container .record-entry').forEach(d => d.open = expand); }
+  function toggleAllDetails(expand) { document.querySelectorAll('#output-container .record-entry, .json-viewer details').forEach(d => d.open = expand); }
   function copyAllResponses() { if (Object.keys(recordDataStore).length === 0) return; navigator.clipboard.writeText(JSON.stringify(recordDataStore, null, 2)); }
   function copyRecordValue(event, key) { event.preventDefault(); event.stopPropagation(); navigator.clipboard.writeText(JSON.stringify(recordDataStore[key], null, 2)); }
-  async function deleteRecord(event, key) { event.preventDefault(); event.stopPropagation(); if (!confirm(`🛑 Are you sure you want to permanently delete the record with key:\n\n'${key}'?`)) return; document.getElementById("key").value = key; await send('delete'); const card = document.getElementById(`record-${key}`); if (card) card.remove(); }
+  async function deleteRecord(event, key) { event.preventDefault(); event.stopPropagation(); if (!confirm(`Are you sure you want to permanently delete the record with key:\n\n'${key}'?`)) return; document.getElementById("key").value = key; await send('delete'); const card = document.getElementById(`record-${key}`); if (card) card.remove(); }
+
+  /**
+   * REWRITTEN JSON Viewer Function
+   * Creates a fully collapsible and nestable HTML representation of a JSON object.
+   */
   function createJsonViewer(data) {
-    const container = document.createElement('div'); container.className = 'json-viewer';
+    const container = document.createElement('div');
+    container.className = 'json-viewer';
+
     const processValue = (value) => {
       if (value === null) return `<span class="json-null">null</span>`;
       if (typeof value === 'string') {
-        try { const nestedObj = JSON.parse(value); if (typeof nestedObj === 'object' && nestedObj !== null) return createJsonViewer(nestedObj).innerHTML; } catch (e) { /* Not a JSON string */ }
+        // Check if the string is itself a valid JSON object or array
+        if ((value.startsWith('{') && value.endsWith('}')) || (value.startsWith('[') && value.endsWith(']'))) {
+          try {
+            const nestedObj = JSON.parse(value);
+            // If parsing succeeds, recursively call the viewer
+            return createJsonViewer(nestedObj).innerHTML;
+          } catch (e) { /* Not a valid JSON string, treat as a regular string */ }
+        }
         return `<span class="json-string">"${value.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"</span>`;
       }
       if (typeof value === 'number') return `<span class="json-number">${value}</span>`;
       if (typeof value === 'boolean') return `<span class="json-boolean">${value}</span>`;
       if (typeof value === 'object') {
-        const isArray = Array.isArray(value); const keys = Object.keys(value);
-        if (keys.length === 0) return isArray ? '[]' : '{}';
-        const details = document.createElement('details'); details.open = true;
-        const summary = document.createElement('summary'); summary.innerHTML = `<span class="json-brace">${isArray ? '[' : '{'}</span>...`;
+        const isArray = Array.isArray(value);
+        const keys = Object.keys(value);
+        if (keys.length === 0) return `<span class="json-brace">${isArray ? '[]' : '{}'}</span>`;
+
+        const details = document.createElement('details');
+        details.open = true; // Objects/arrays start open by default
+
+        const summary = document.createElement('summary');
+        summary.innerHTML = `<span class="json-brace">${isArray ? '[' : '{'}</span>`;
         details.appendChild(summary);
+
         const list = document.createElement('ul');
-        for (const key of keys) { const item = document.createElement('li'); const keyHtml = isArray ? '' : `<span class="json-key">"${key}"</span>: `; item.innerHTML = keyHtml + processValue(value[key]); list.appendChild(item); }
+        for (const key of keys) {
+          const item = document.createElement('li');
+          // For arrays, we don't show the key (index)
+          const keyHtml = isArray ? '' : `<span class="json-key">"${key}"</span>: `;
+          const valueHtml = processValue(value[key]);
+          item.innerHTML = keyHtml + valueHtml;
+          list.appendChild(item);
+        }
         details.appendChild(list);
-        const closingBrace = document.createElement('span'); closingBrace.className = 'json-brace'; closingBrace.textContent = isArray ? ']' : '}';
-        details.appendChild(closingBrace); return details.outerHTML;
+
+        const closingBrace = document.createElement('span');
+        closingBrace.className = 'json-brace';
+        closingBrace.textContent = isArray ? ']' : '}';
+        details.appendChild(closingBrace);
+
+        return details.outerHTML;
       }
-      return value;
+      return value; // Fallback for other data types
     };
-    container.innerHTML = processValue(data); return container;
+
+    container.innerHTML = processValue(data);
+    return container;
   }
 </script>
 
