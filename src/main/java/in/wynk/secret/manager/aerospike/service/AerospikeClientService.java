@@ -7,7 +7,9 @@ import in.wynk.secret.manager.aerospike.dto.response.StatsResponse;
 import in.wynk.secret.manager.aerospike.enums.AerospikeEnvironment;
 import in.wynk.secret.manager.aerospike.repository.AerospikeRepository;
 import in.wynk.secret.manager.aerospike.dto.request.AerospikeRequest;
+import in.wynk.secret.manager.aerospike.utils.RecordsUtils;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +23,14 @@ public class AerospikeClientService {
         getRepo(req.getEnv()).saveRecord(req.getNamespace(), req.getSet(), req.getKey(), req.getData());
     }
 
-    public Record fetch(AerospikeRequest req) {
-        return getRepo(req.getEnv()).getRecord(req.getNamespace(), req.getSet(), req.getKey());
+    public PaginatedResponse fetch(AerospikeRequest req) {
+        Record record = getRepo(req.getEnv()).getRecord(req.getNamespace(), req.getSet(), req.getKey());
+
+        if (record == null) {
+            return PaginatedResponse.of(Map.of(), 0,0,0);
+        } else {
+            return PaginatedResponse.of(Map.of(req.getKey(), RecordsUtils.toMap(record)), 1, 1, 1);
+        }
     }
 
     public PaginatedResponse fetchAll(AerospikeRequest req) {
@@ -38,12 +46,23 @@ public class AerospikeClientService {
         return getRepo(request.getEnv()).deleteRecord(request.getNamespace(), request.getSet(), request.getKey());
     }
 
-    public Map<String, Object> fetchByPrefix(AerospikeRequest req) {
-       return getRepo(req.getEnv()).scanSet(req.getNamespace(), req.getSet(),
-                key -> key.userKey != null && key.userKey.toString().startsWith(req.getPrefix()));
+    public PaginatedResponse fetchByPrefix(AerospikeRequest req) {
+        Map<String, Object> recordsData =  getRepo(req.getEnv()).scanSet(req.getNamespace(), req.getSet(),
+                                             key -> key.userKey != null && key.userKey.toString().startsWith(req.getPrefix()));
+
+        int totalRecords = recordsData.size();
+        int pageSize = 10; // You can make this configurable
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+        int fromIndex = (req.getPage() - 1) * pageSize;
+        Map<String, Object> paginatedData = recordsData.entrySet().stream()
+                                                      .skip(fromIndex)
+                                                      .limit(pageSize)
+                                                      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return PaginatedResponse.of(paginatedData, req.getPage(), totalPages, totalRecords);
     }
 
     public int count(AerospikeRequest req) {
-       return getRepo(req.getEnv()).countInSet(req.getNamespace(), req.getSet());
+        return getRepo(req.getEnv()).countInSet(req.getNamespace(), req.getSet());
     }
 }

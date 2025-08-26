@@ -31,9 +31,8 @@ public class AerospikeController {
     }
 
     @PostMapping("/fetch")
-    public ResponseEntity<Object> fetch(@RequestBody AerospikeRequest request) {
-        Record r = service.fetch(request);
-        return r != null ? ResponseEntity.ok(r.bins) : ResponseEntity.status(404).body("Not found");
+    public PaginatedResponse fetch(@RequestBody AerospikeRequest request) {
+        return service.fetch(request);
     }
 
     @PostMapping("/fetchAll")
@@ -48,7 +47,7 @@ public class AerospikeController {
     }
 
     @PostMapping("/searchByPrefix")
-    public Map<String, Object> searchByPrefix(@RequestBody AerospikeRequest request) {
+    public PaginatedResponse searchByPrefix(@RequestBody AerospikeRequest request) {
       return service.fetchByPrefix(request);
     }
 

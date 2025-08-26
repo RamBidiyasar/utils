@@ -9,12 +9,14 @@ import com.aerospike.client.policy.WritePolicy;
 
 import in.wynk.secret.manager.aerospike.dto.response.PaginatedResponse;
 import in.wynk.secret.manager.aerospike.dto.response.StatsResponse;
-import in.wynk.secret.manager.aerospike.utils.AerospikeUtil;
+import in.wynk.secret.manager.aerospike.utils.RecordsUtils;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.elasticsearch.common.Priority;
 
 public class AerospikeRepository {
 
@@ -55,8 +57,7 @@ public class AerospikeRepository {
 
         client.scanAll(scanPolicy, namespace, set, (key, record) -> {
             if (keyFilter.test(key)) {
-                recordData.put(key.userKey.toString(), Map.of("values", record.bins
-                    , "ttl", record.getTimeToLive()));
+                recordData.put(key.userKey.toString(), RecordsUtils.toMap(record));
             }
         });
 
@@ -126,31 +127,40 @@ public class AerospikeRepository {
     }
 
 
+    /**
+     * Computes set statistics by scanning all records.
+     * This is accurate but can be expensive for large sets.
+     *
+     * @param namespace Aerospike namespace
+     * @param set       Aerospike set
+     * @return StatsResponse containing recordCount, memoryUsedBytes, deviceUsedBytes (approx)
+     */
     public StatsResponse getSetStatistics(String namespace, String set) {
-        StatsResponse stats = StatsResponse.of(0, 0, 0); // Default to zero
+        AtomicLong recordCount = new AtomicLong(0);
+        AtomicLong memoryUsedBytes = new AtomicLong(0);
+
         try {
-            Node node = client.getNodes()[0];
-            String command = "sets/" + namespace + "/" + set;
-            String infoString = Info.request(node, command);
+            ScanPolicy policy = new ScanPolicy();
+            policy.includeBinData = true;       // fetch bins to estimate size
+            policy.concurrentNodes = true;
 
+            client.scanAll(policy, namespace, set, (Key key, Record record) -> {
+                recordCount.incrementAndGet();
+                memoryUsedBytes.addAndGet(RecordsUtils.getApproxSize(record));
+            });
 
-            // Robustly parse the key-value string into a Map
-            if (infoString != null && !infoString.isEmpty()) {
-                Map<String, String> statsMap = Arrays.stream(infoString.split(";"))
-                                                     .map(part -> part.split("=", 2))
-                                                     .filter(pair -> pair.length == 2)
-                                                     .collect(Collectors.toMap(pair -> pair[0], pair -> pair[1]));
-
-                // Safely get values from the map
-                stats.setRecordCount(Long.parseLong(statsMap.getOrDefault("objects", "0")));
-                stats.setMemoryUsedBytes(Long.parseLong(statsMap.getOrDefault("memory_used_bytes", "0")));
-                stats.setDeviceUsedBytes(Long.parseLong(statsMap.getOrDefault("device_used_bytes", "0")));
-            }
         } catch (Exception e) {
-            System.out.println("❌ Error fetching stats for " + namespace + "." + set + ": " + e.getMessage());
+            System.err.printf("❌ Error scanning stats for %s.%s: %s%n", namespace, set, e.getMessage());
         }
-        return stats;
+
+        return StatsResponse.of(
+            recordCount.get(),
+            memoryUsedBytes.get(),
+            memoryUsedBytes.get()
+        );
     }
+
+
 
 
     /**
@@ -162,12 +172,8 @@ public class AerospikeRepository {
         scanPolicy.includeBinData = true;
 
         client.scanAll(scanPolicy, namespace, set, (key, record) -> {
-            Map<String, Object> recordData = Map.of(
-                "values", record.bins,
-                "ttl", record.getTimeToLive(),
-                "size", AerospikeUtil.getApproxSize(record)
-            );
-            System.out.println("Key: " + key.userKey + ", Size: " + AerospikeUtil.getApproxSize(record) + " bytes");
+            Map<String, Object> recordData = RecordsUtils.toMap(record);
+            System.out.println("Key: " + key.userKey + ", Size: " + RecordsUtils.getApproxSize(record) + " bytes");
             allRecords.add(new AbstractMap.SimpleEntry<>(key.userKey.toString(), recordData));
         });
 
