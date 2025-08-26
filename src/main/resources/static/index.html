@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Aerospike Nexus Interface</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -37,6 +38,7 @@
     #query-helper { margin-top: 15px; text-align: center; font-size: 0.9em; color: var(--secondary-color); background-color: var(--input-bg); padding: 8px; border-radius: 4px; border-left: 3px solid var(--secondary-color); }
     .actions-container { display: flex; flex-direction: column; gap: 15px; }
     .btn { padding: 12px 20px; border: 1px solid var(--primary-color); border-radius: 6px; background-color: transparent; color: var(--primary-color); font-size: 0.9em; font-weight: 500; font-family: 'Roboto Mono', monospace; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; } .btn:hover, .btn:focus { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3); } .btn-primary { background-color: var(--primary-color); color: var(--bg-color); } .btn-primary:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
+    .btn-block { width: 100%; }
     .output-terminal { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; position: relative; } .terminal-header { background: var(--border-color); padding: 8px 15px; font-size: 0.8em; color: var(--text-color); display: flex; align-items: center; justify-content: space-between; } .terminal-title { display: flex; align-items: center; gap: 10px; } .terminal-actions { display: flex; gap: 10px; } .terminal-actions .btn { padding: 4px 10px; font-size: 0.8em; }
     #status-indicator { width: 10px; height: 10px; border-radius: 50%; background-color: #555; transition: background-color 0.3s ease; } .status-waiting { background-color: var(--warning-color); animation: pulse 1.5s infinite; } .status-success { background-color: var(--success-color); } .status-error { background-color: var(--error-color); }
     #loader { display: none; justify-content: center; align-items: center; padding: 40px; min-height: 200px; } .dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--primary-color); margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both; } .dot-1 { animation-delay: -0.32s; } .dot-2 { animation-delay: -0.16s; }
@@ -46,9 +48,11 @@
     .record-header-info { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 15px; flex-grow: 1; overflow: hidden; }
     .record-key { font-weight: bold; color: var(--secondary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-basis: 100%; }
     .record-meta-item { font-size: 0.8em; color: var(--text-color); opacity: 0.7; display: flex; align-items: center; gap: 5px; }
-    .record-actions { display: flex; gap: 8px; } .record-actions .btn { background: transparent; border: 1px solid var(--border-color); padding: 5px 10px; font-size: 0.8em; color: var(--text-color); flex-shrink: 0; } .record-actions .btn:hover { color: var(--bg-color); } .record-actions .btn.delete:hover { background-color: var(--error-color); border-color: var(--error-color); } .record-actions .btn.copy-val:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
+    .record-actions { display: flex; gap: 8px; } .record-actions .btn { padding: 5px 10px; font-size: 0.8em; color: var(--text-color); flex-shrink: 0; } .record-actions .btn:hover { color: var(--bg-color); } .record-actions .btn.delete:hover { background-color: var(--error-color); border-color: var(--error-color); } .record-actions .btn.copy-val:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
     .record-body { padding: 15px; border-top: 1px solid var(--border-color); }
-    #set-stats-display { background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 15px; margin: 20px 0; border-radius: 6px; font-size: 0.9em; color: var(--text-color); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; }
+    #set-stats-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0; }
+    #stats-content { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 6px; }
+    #stats-display-inner { width: 100%; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px; }
     .stat-item { text-align: center; } .stat-item-label { font-size: 0.8em; opacity: 0.7; } .stat-item-value { font-weight: bold; color: var(--secondary-color); }
     .pagination-controls { display: flex; justify-content: center; align-items: center; padding: 10px; gap: 8px; border-top: 1px solid var(--border-color); background: var(--bg-color); } .pagination-controls .btn { padding: 5px 12px; font-size: 0.8em; } .pagination-controls .btn[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; } .pagination-info { font-size: 0.9em; color: var(--text-color); margin: 0 10px; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(240, 185, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0); } } @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -65,8 +69,10 @@
         <div class="form-group"><label for="namespace">Namespace</label><select id="namespace"><option value="ucm_dev">ucm_dev</option><option value="user-core">user-core</option></select></div>
         <div class="form-group"><label for="set">Set</label><select id="set"><option value="defaultPage">defaultPage</option><option value="staticPackage">staticPackage</option><option value="origami-user-page">origami-user-page</option></select></div>
       </div>
-      <div id="set-stats-display">
-        <div class="stat-item"><div class="stat-item-label">Status</div><div class="stat-item-value">Press "Get Stats"</div></div>
+      <div id="set-stats-container">
+        <div id="stats-content">
+          <button class="btn btn-block" onclick="fetchSetStats()"><i class="fa-solid fa-gauge-high"></i> Show Stats</button>
+        </div>
       </div>
       <div class="query-section">
         <div class="form-grid">
@@ -78,7 +84,6 @@
       <div class="actions-container">
         <button class="btn btn-primary" onclick="handleQuery()"><i class="fa-solid fa-bolt"></i> Execute Query</button>
         <button class="btn" onclick="send('save')"><i class="fa-solid fa-save"></i> Save</button>
-        <button class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-gauge-high"></i> Get Stats</button>
       </div>
       <details class="collapsible-input"><summary>Data to Save (JSON)</summary><div class="form-group"><textarea id="data" placeholder='{ "binName": "binValue" }'></textarea></div></details>
     </div>
@@ -118,8 +123,8 @@
   }
 
   async function fetchSetStats() {
-    const statsDisplay = document.getElementById('set-stats-display');
-    statsDisplay.innerHTML = `
+    const statsContent = document.getElementById('stats-content');
+    statsContent.innerHTML = `
         <div id="set-stats-loader" style="display: flex; justify-content: center; align-items: center; padding: 10px;">
             <div class="dot dot-1"></div>
             <div class="dot dot-2"></div>
@@ -133,13 +138,19 @@
       });
       if (!res.ok) throw new Error('Failed to fetch stats');
       const data = await res.json();
-      statsDisplay.innerHTML = `
-                <div class="stat-item"><div class="stat-item-label">Total Records</div><div class="stat-item-value">${data.recordCount.toLocaleString()}</div></div>
-                <div class="stat-item"><div class="stat-item-label">Memory Usage</div><div class="stat-item-value">${formatBytes(data.memoryUsedBytes)}</div></div>
-                <div class="stat-item"><div class="stat-item-label">Device Usage</div><div class="stat-item-value">${formatBytes(data.deviceUsedBytes)}</div></div>
-            `;
+      statsContent.innerHTML = `
+        <div id="stats-display-inner">
+          <div class="stat-item"><div class="stat-item-label">Total Records</div><div class="stat-item-value">${data.recordCount.toLocaleString()}</div></div>
+          <div class="stat-item"><div class="stat-item-label">Memory Usage</div><div class="stat-item-value">${formatBytes(data.memoryUsedBytes)}</div></div>
+          <div class="stat-item"><div class="stat-item-label">Device Usage</div><div class="stat-item-value">${formatBytes(data.deviceUsedBytes)}</div></div>
+        </div>
+        <button class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-rotate"></i> Refresh Stats</button>
+      `;
     } catch (error) {
-      statsDisplay.innerHTML = `<div class="stat-item"><div class="stat-item-label">Status</div><div class="stat-item-value" style="color: var(--error-color);">Error</div></div>`;
+      statsContent.innerHTML = `
+        <div class="stat-item"><div class="stat-item-label" style="color: var(--error-color);">Error</div><div class="stat-item-value">Failed to fetch stats.</div></div>
+        <button class="btn" onclick="fetchSetStats()"><i class="fa-solid fa-rotate"></i> Try Again</button>
+      `;
       console.error("Stats fetch error:", error);
     }
   }
