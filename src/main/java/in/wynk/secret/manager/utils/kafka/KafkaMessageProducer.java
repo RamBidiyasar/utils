@@ -12,20 +12,25 @@ import java.util.concurrent.ExecutionException;
 public class KafkaMessageProducer {
 
     public static void main(String[] args) {
-        String bootstrapServers = "10.168.88.20:9092";
-        String topicName = "wcf_preprod.payment_renewal_charging";
+        String bootstrapServers = "10.161.24.22:9092,10.161.24.24:9092,10.161.24.23:9092";
+        String topicName = "xstream-wcf-events";
         String username = "appuser";
-        String password = "uJK67dC1Ax";
+        String password = "uJK67AUDI1Ax";
         String key = "825db3c3-e885-4bc3-b026-e051169c4179";
         String value = """
             {
-            	"attemptSequence": 2,
-            	"id": "0cd2d7e1-6b77-11f0-ae79-931f52d93b80",
-            	"uid": "MukmuUPVfhPbZ0gGS0",
-            	"msisdn": "+913111111126",
-            	"clientAlias": "airtelxstream",
-            	"paymentCode": "APS",
-            	"planId": 6488
+              "uid": "csuXNH1Dn5DgKtXYd0",
+              "msisdn": "9761697439",
+              "event": "PURCHASE",
+              "planId": 690,
+              "validTillDate": 1760783146219,
+              "autoRenewal": false,
+              "preferredPartner": false,
+              "referenceId": "f3970934-1f6d-11eb-afe2-7f046742a12d322233222222",
+              "planPurchaseDate": 1758191146219,
+              "platformSource": null,
+              "telcoUnlimited": false,
+              "siIdentifier": null
             }
             """;
 

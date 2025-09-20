@@ -32,10 +32,10 @@ public class RedisKeyFetcher {
         String password = "MysTr0ngP@ssw0rd@123";
 //        String key = "arsenal-complete-axsta_x00i64981739954868922";
 //        String key = "user-recent-fav-sync4FenZf3OmeMC934S30";
-        String key = "preview-CdyBLFvJVy8ursL6S0-SHEMAROOME_VIDEO_MAHAKUMBH";
+        String key = "MOBILITY:ANDROID:csuXNH1Dn5DgKtXYd0";
         List<String> responses = new ArrayList<>();
-//        String OPERATION = "GET";
-        String OPERATION = "DEL";
+        String OPERATION = "GET";
+//        String OPERATION = "DEL";
 
         for (String ip : listIps) {
             try (Jedis jedis = new Jedis(ip, 6379)) {
@@ -43,13 +43,15 @@ public class RedisKeyFetcher {
 
                 Object response = null;
                 switch (OPERATION){
-                   case  "GET" -> response = jedis.hgetAll(key); // Fetch from string key
+                   case  "GET" -> response = jedis.get(key); // Fetch from string key
                    case  "DEL" -> response = jedis.del(key); // Fetch from string key otherwise
                 }
 
                 if (ObjectUtils.isNotEmpty(response)) {
+                    Long ttl = jedis.ttl(key);
+                    System.out.println("TTL for key " + key + " is: " + ttl);
                     System.out.println("**********************************************************************");
-                    System.out.println("Redis IP : " + ip + " , Response : " + response);
+                    System.out.println("Redis IP : " + ip + " , Response : " + response.toString());
                     System.out.println("**********************************************************************");
                 }
                 responses.add("IP: " + ip + " Response: " + response);

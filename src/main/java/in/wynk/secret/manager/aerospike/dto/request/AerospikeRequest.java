@@ -12,5 +12,6 @@ public class AerospikeRequest {
     private String key;
     private Map<String, Object> data;
     private String prefix;
+    private String suffix;
     private int page = 1;
 }

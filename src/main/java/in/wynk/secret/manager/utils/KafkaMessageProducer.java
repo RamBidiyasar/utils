@@ -18,7 +18,7 @@ public class KafkaMessageProducer {
     private static final int MESSAGES_PER_SECOND_PER_THREAD = 1000;  // Adjust based on desired message throughput
 
     public static void main(String[] args) throws InterruptedException {
-        String serversDetails = "10.169.24.13:9092";
+        String serversDetails = "sdflkdh";
         String topic = "Topic01";
         String username = "appuser";
         String password = "uJK67dC1Ax";

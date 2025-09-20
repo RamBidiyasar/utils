@@ -53,7 +53,7 @@ public class AerospikeRepository {
     public Map<String, Object> scanSet(String namespace, String set, Predicate<Key> keyFilter) {
         Map<String, Object> recordData = new HashMap<>();
         ScanPolicy scanPolicy = new ScanPolicy();
-        scanPolicy.includeBinData = true;
+        scanPolicy.includeBinData = false;
 
         client.scanAll(scanPolicy, namespace, set, (key, record) -> {
             if (keyFilter.test(key)) {
@@ -169,7 +169,7 @@ public class AerospikeRepository {
     public PaginatedResponse scanSetPaginated(String namespace, String set, int page, int pageSize) {
         List<Map.Entry<String, Object>> allRecords = new ArrayList<>();
         ScanPolicy scanPolicy = new ScanPolicy();
-        scanPolicy.includeBinData = true;
+        scanPolicy.includeBinData = false;
 
         client.scanAll(scanPolicy, namespace, set, (key, record) -> {
             Map<String, Object> recordData = RecordsUtils.toMap(record);

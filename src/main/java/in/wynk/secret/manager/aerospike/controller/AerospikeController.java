@@ -51,6 +51,12 @@ public class AerospikeController {
       return service.fetchByPrefix(request);
     }
 
+
+    @PostMapping("/searchBySuffix")
+    public PaginatedResponse searchBySuffix(@RequestBody AerospikeRequest request) {
+        return service.fetchBYSuffix(request);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@RequestBody AerospikeRequest request) {
         boolean deleted = service.delete(request);

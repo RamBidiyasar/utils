@@ -48,21 +48,32 @@ public class AerospikeClientService {
 
     public PaginatedResponse fetchByPrefix(AerospikeRequest req) {
         Map<String, Object> recordsData =  getRepo(req.getEnv()).scanSet(req.getNamespace(), req.getSet(),
-                                             key -> key.userKey != null && key.userKey.toString().startsWith(req.getPrefix()));
+                                             key -> key.userKey != null && key.userKey.toString().matches(req.getPrefix()));
 
+        return getPaginatedResponse(req, recordsData);
+    }
+
+    public int count(AerospikeRequest req) {
+        return getRepo(req.getEnv()).countInSet(req.getNamespace(), req.getSet());
+    }
+
+    public PaginatedResponse fetchBYSuffix(final AerospikeRequest req) {
+        Map<String, Object> recordsData =  getRepo(req.getEnv()).scanSet(req.getNamespace(), req.getSet(),
+                                                                         key -> key.userKey != null && key.userKey.toString().endsWith(req.getPrefix()));
+
+        return getPaginatedResponse(req, recordsData);
+    }
+
+    private PaginatedResponse getPaginatedResponse(final AerospikeRequest req, final Map<String, Object> recordsData) {
         int totalRecords = recordsData.size();
         int pageSize = 10; // You can make this configurable
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
         int fromIndex = (req.getPage() - 1) * pageSize;
         Map<String, Object> paginatedData = recordsData.entrySet().stream()
-                                                      .skip(fromIndex)
-                                                      .limit(pageSize)
-                                                      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                                                       .skip(fromIndex)
+                                                       .limit(pageSize)
+                                                       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return PaginatedResponse.of(paginatedData, req.getPage(), totalPages, totalRecords);
-    }
-
-    public int count(AerospikeRequest req) {
-        return getRepo(req.getEnv()).countInSet(req.getNamespace(), req.getSet());
     }
 }

@@ -9,9 +9,18 @@ spring:
         enabled: false
   config:
     import: sm://
-
 test:
   data1: testing
+
+logging:
+  level:
+    org.apache.kafka: ERROR
+    kafka: ERROR
+    org:
+      apache:
+        kafka:
+          clients:
+            NetworkClient: ERROR
 
 wynk:
   elastic:
@@ -43,3 +52,5 @@ matching-rules:
       type: RANGE
       params:
         range: 1
+server:
+  port: 8081
