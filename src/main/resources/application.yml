@@ -54,3 +54,12 @@ matching-rules:
         range: 1
 server:
   port: 8081
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+
+sqs:
+  queue:
+    url: your-queue-url

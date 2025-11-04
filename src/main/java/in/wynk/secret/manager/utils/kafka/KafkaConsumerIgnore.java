@@ -16,7 +16,7 @@ public class KafkaConsumerIgnore {
     public static void main(String[] args) {
         String bootstrapServers = "10.169.24.13:9092";
         String consumerGroup = "xstream-2";
-        String topic = "Topic012";
+        String topic = "new1";
         String username = "appuser";
         String password = "uJK67dC1Ax";
 
@@ -25,7 +25,7 @@ public class KafkaConsumerIgnore {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroup);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest"); // or "latest"
 
         if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
@@ -57,9 +57,10 @@ public class KafkaConsumerIgnore {
                         System.out.println("Received message: " + record.value() + ", partition: " + record.partition() + ", offset: " + record.offset());
                         // Ignore the message, just discard
                         // Could log partition/offset if needed
-                        // System.out.printf("Ignored message at partition=%d offset=%d%n", record.partition(), record.offset());
+                         System.out.printf("Ignored message at partition=%d offset=%d%n", record.partition(), record.offset());
                     });
                 }
+                consumer.seekToBeginning(consumer.assignment());
             }
         } catch (Exception e) {
             System.err.println("Consumer stopped: " + e.getMessage());
