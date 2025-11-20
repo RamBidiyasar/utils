@@ -32,7 +32,7 @@ public class RedisKeyFetcher {
         String password = "MysTr0ngP@ssw0rd@123";
 //        String key = "arsenal-complete-axsta_x00i64981739954868922";
 //        String key = "user-recent-fav-sync4FenZf3OmeMC934S30";
-        String key = "MOBILITY:ANDROID:csuXNH1Dn5DgKtXYd0";
+        String key = "bearerToken";
         List<String> responses = new ArrayList<>();
         String OPERATION = "GET";
 //        String OPERATION = "DEL";

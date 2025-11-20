@@ -23,8 +23,6 @@ public class RedisKeySetter {
 //        );
 
 
-//          List<String> listIps = List.of("10.161.24.47");
-
 //        List<String> listIps = List.of("10.161.24.66","10.161.24.67");
 
         List<String> listIps = List.of("10.169.24.15","10.169.24.20");
@@ -34,7 +32,7 @@ public class RedisKeySetter {
 //        String key = "HOTSTAR_DTH_TVSHOW_1971002549";
 
 
-        String key = "user-subs-info-scdONRoG3aW8lfrrO0";
+        String key = "user-R2kQe9eiOWzVwEpX40";
         String value = """
             {
               "success": true,
@@ -46,7 +44,7 @@ public class RedisKeySetter {
             }
             """;
         List<String> responses = new ArrayList<>();
-        Operation OPERATION = Operation.GET;
+        Operation OPERATION = Operation.DEL;
 
         for (String ip : listIps) {
             try (Jedis jedis = new Jedis(ip, 6379)) {

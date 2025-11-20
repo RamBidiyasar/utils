@@ -2,22 +2,17 @@ package in.wynk.secret.manager.utils.kafka;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.ListTopicsResult;
 
-import java.util.Collections;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-public class KafkaTopicDeleter {
+public class KafkaTopicLister {
 
     public static void main(String[] args) {
-//        String bootstrapServers = "10.169.24.13:9092";
-//        String topicName = "atv-continue-watching-sync-preprod";
-//        String username = "appuser";
-//        String password = "uJK67dC1Ax";
-
-
-        String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
-        String topicName = "atv-continue-watching-prod-23";
+        // Replace with your Kafka bootstrap servers
+        String bootstrapServers = "10.161.24.22:9092,10.161.24.24:9092,10.161.24.23:9092";
         String username = "appuser";
         String password = "uJK67AUDI1Ax";
 
@@ -31,13 +26,14 @@ public class KafkaTopicDeleter {
                                            "password=\"" + password + "\";");
 
         try (AdminClient adminClient = AdminClient.create(properties)) {
+            ListTopicsResult topics = adminClient.listTopics();
+            Set<String> topicNames = topics.names().get();
 
-            // Delete the topic
-            adminClient.deleteTopics(Collections.singletonList(topicName)).all().get();
-            System.out.println("Topic deleted successfully: " + topicName);
+            System.out.println("List of Kafka topics:");
+            topicNames.forEach(System.out::println);
 
         } catch (InterruptedException | ExecutionException e) {
-            System.err.println("Error deleting topic: " + e.getMessage());
+            System.err.println("Error listing topics: " + e.getMessage());
             Thread.currentThread().interrupt();
         }
     }
