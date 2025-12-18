@@ -21,7 +21,7 @@ public class KafkaTimeWindowRepublisher {
         String username = "appuser";
         String password = "uJK67AUDI1Ax";
         String consumerGroup = "xstream-2";
-      Set<String> UIDS = Set.of("0bh9bxrcFvkJtkMuk0");
+         Set<String> UIDS = Set.of("0bh9bxrcFvkJtkMuk0");
 
 
         // --- Time window we want to extract from the log (today 14:00 - 14:30) ---

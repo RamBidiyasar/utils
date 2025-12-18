@@ -1,10 +1,9 @@
 spring:
   application:
     name: ${!app.name:false}
-
   cloud:
     gcp:
-      project-id: prj-wynk-pre-iptv-svc-01
+      project-id: prj-wynk-pre-xstrm-svc-01
       secretmanager:
         enabled: false
   config:

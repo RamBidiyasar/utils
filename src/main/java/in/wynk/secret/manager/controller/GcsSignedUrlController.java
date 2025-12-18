@@ -23,21 +23,15 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class GcsSignedUrlController {
 
-    private final  String bucketName = "ingestiondump";
-
-
     @GetMapping("/generate-signed-urls")
-    public ResponseEntity<List<String>> getSignedUrls(@RequestParam("folder") String folder) throws IOException {
+    public ResponseEntity<List<String>> getSignedUrls(@RequestParam("bucketName") String bucketName, @RequestParam("folder") String folder) throws IOException {
         List<String> signedUrls = new ArrayList<>();
 
         // Ensure the folder ends with a slash (to differentiate folder "abc" from "abcdef")
-        if (!folder.endsWith("/")) {
-            folder += "/";
-        }
-
+        String prefix = folder.endsWith("/") ? folder : folder + "/";
 
         GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault();
-        String serviceAccount = "gke-wynk-pre-xstrm-app-sa@prj-wynk-pre-xstrm-svc-01.iam.gserviceaccount.com";
+        String serviceAccount = "gke-wynk-pre-xstrm-sa-presign@prj-wynk-pre-xstrm-svc-01.iam.gserviceaccount.com";
         ImpersonatedCredentials impersonatedCredentials = ImpersonatedCredentials.create(
                 googleCredentials,
                 serviceAccount,
@@ -45,14 +39,19 @@ public class GcsSignedUrlController {
                 Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"),
                 3600
         );
-        Storage storage = StorageOptions.newBuilder().setCredentials(impersonatedCredentials).build().getService();
+
+        Storage storage = StorageOptions.newBuilder()
+                .setCredentials(impersonatedCredentials)
+                .setProjectId("prj-wynk-pre-xstrm-svc-01")
+                .build()
+                .getService();
 
         // List all files under the given folder and its subfolders
-        Iterable<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(folder)).iterateAll();
+        Iterable<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(prefix)).iterateAll();
 
         for (Blob blob : blobs) {
             // Skip folder markers (if any)
-            if (blob.isDirectory()) {
+            if (blob.getName().endsWith("/")) {
                 continue;
             }
 

@@ -1,5 +1,6 @@
 package in.wynk.secret.manager.script;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import in.wynk.secret.manager.dto.CohortRequest;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -22,9 +23,11 @@ import java.util.Map;
 
 public class CohortProcessorStandalone {
 
-    private static final String CSV_FILE = "CohortDarts1.csv";
+    private static final String CSV_FILE = "LOB-CO.csv";
     private static final String API_URL = "http://user-consumer-prod.internal.airtel.tv/s2s/v1/solace/message/dart";
     private static final boolean SEND_REQUESTS = true;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
 
     private static final ZoneId IST_ZONE = ZoneId.of("Asia/Kolkata");
     private static final ZoneId UTC_ZONE = ZoneId.of("UTC");
@@ -67,7 +70,7 @@ public class CohortProcessorStandalone {
                 String referenceId = record.isMapped("reference_id") ? record.get("reference_id") : null;
                 String si = record.isMapped("si") ? record.get("si") : null;
                 String uid = record.isMapped("uid") ? record.get("uid") : null;
-                String planId = record.isMapped("plan_id") ? record.get("plan_id") : null;
+                String planId = "99000";
                 String cohort = record.isMapped("cohort") ? record.get("cohort") : null;
                 String validTillStr = record.isMapped("valid_till") ? record.get("valid_till") : null;
 
@@ -129,7 +132,9 @@ public class CohortProcessorStandalone {
     private void sendRequest(CohortRequest payload) {
         try {
             // Using Java 11+ HttpClient
-            String jsonPayload = new com.google.gson.Gson().toJson(payload);
+
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_URL))
                     .header("Content-Type", "application/json")
