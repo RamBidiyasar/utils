@@ -28,7 +28,7 @@ public class KafkaConnectorGenerator {
     private static final String SOURCE_SASL_PASSWORD = "uJK67dC1Ax";
 
     // Sink Connector Configuration
-    private static final String SINK_CONNECTION_URI = "mongodb://adminUser:dummypassword@10.249.219.137:27017/?authSource=admin&connectTimeoutMS=10000";
+    private static final String SINK_CONNECTION_URI = "mongodb://admin:xstrm%401234@10.169.24.27:27017/?authSource=admin&connectTimeoutMS=10000";
     private static final String SINK_SASL_USERNAME = "appuser";
     private static final String SINK_SASL_PASSWORD = "uJK67dC1Ax";
     private static final String DLQ_TOPIC = "mongo.dlq.errors";
@@ -77,85 +77,9 @@ public class KafkaConnectorGenerator {
         }
 
 
-        List<String> collections = Arrays.asList(
-                "ltp_channel_inventory",
-                "sport_info",
-                "promotional_event",
-                "device_notification",
-                "system.profile",
-                "sequence",
-                "dummy_channel_info",
-                "notification_store",
-                "box_details",
-                "failed_wcf_events",
-                "filtered_shows",
-                "pages",
-                "game_meta",
-                "hotstar_highlights",
-                "match_questions",
-                "cpRule",
-                "theme_config",
-                "box_qms",
-                "airtel_only_config",
-                "mw_config",
-                "rails_copy",
-                "title_akas",
-                "user_otp",
-                "cms_user",
-                "bb_upgrade_order",
-                "rails",
-                "playable_intermediate_content",
-                "product_channel_mapping",
-                "polls",
-                "auto_redemption",
-                "live_content",
-                "match_session_info",
-                "titles",
-                "external_content",
-                "testing",
-                "pending_work",
-                "packages",
-                "deviceUpdate",
-                "people",
-                "playable_content",
-                "temp",
-                "ltp_licence_inventory",
-                "cdn_metrics",
-                "comparators",
-                "pc_prod_5_dec",
-                "integration_templates",
-                "cdn_auth_config",
-                "alertss_config",
-                "isoLanguages",
-                "stick_device",
-                "gracenote_meta",
-                "alerts_config",
-                "old_user_detail",
-                "chatTopics",
-                "alerts",
-                "user_old",
-                "youtube_config",
-                "cdn_metrics_history",
-                "playable_content_debezium",
-                "list_config",
-                "org_config",
-                "notification_store_new",
-                "alert_user",
-                "cp_config",
-                "alert_triggers",
-                "aggregation_config",
-                "cms_roles",
-                "user_block_list",
-                "language",
-                "creators",
-                "sequence_generator",
-                "iptv_mw_config",
-                "language_config",
-                "supply_config",
-                "language_channel_mapping",
-                "demoTest",
-                "reconcile",
-                "app_config");
+        List<String> collections = List.of("mw_config", "playable_content");
+
+//        List<String> collections = Arrays.asList("ltp_channel_inventory", "sport_info", "promotional_event", "device_notification", "system.profile", "sequence", "dummy_channel_info", "notification_store", "box_details", "failed_wcf_events", "filtered_shows", "pages", "game_meta", "hotstar_highlights", "match_questions", "cpRule", "theme_config", "box_qms", "airtel_only_config", "mw_config", "rails_copy", "title_akas", "user_otp", "cms_user", "bb_upgrade_order", "rails", "playable_intermediate_content", "product_channel_mapping", "polls", "auto_redemption", "live_content", "match_session_info", "titles", "external_content", "testing", "pending_work", "packages", "deviceUpdate", "people", "playable_content", "temp", "ltp_licence_inventory", "cdn_metrics", "comparators", "pc_prod_5_dec", "integration_templates", "cdn_auth_config", "alertss_config", "isoLanguages", "stick_device", "gracenote_meta", "alerts_config", "old_user_detail", "chatTopics", "alerts", "user_old", "youtube_config", "cdn_metrics_history", "playable_content_debezium", "list_config", "org_config", "notification_store_new", "alert_user", "cp_config", "alert_triggers", "aggregation_config", "cms_roles", "user_block_list", "language", "creators", "sequence_generator", "iptv_mw_config", "language_config", "supply_config", "language_channel_mapping", "demoTest", "reconcile", "app_config");
 
         totalCollections = collections.size();
 
@@ -525,6 +449,7 @@ public class KafkaConnectorGenerator {
                       "database": "%s",
                       "collection": "%s",
                       "topic.prefix": "%s",
+                      "startup.mode" : "copy_existing",
                       "output.format.value": "json",
                       "output.format.key": "json",
                       "publish.full.document.only": "false",
@@ -553,39 +478,40 @@ public class KafkaConnectorGenerator {
      */
     private static String generateSinkConnectorJson(String connectorName, String collectionName, String topicName) {
         return """
-                {
-                    "name": "%s",
-                    "config": {
-                        "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
-                        "tasks.max": "1",
-                        "topics": "%s",
-                        "connection.uri": "%s",
-                        "database": "%s",
-                        "collection": "%s",
-                        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-                        "key.converter.schemas.enable": "false",
-                        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-                        "value.converter.schemas.enable": "false",
-                        "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInKeyStrategy",
-                        "key.projection.list": "_id",
-                        "document.id.strategy.overwrite.existing": "true",
-                        "change.data.capture.handler": "com.mongodb.kafka.connect.sink.cdc.mongodb.ChangeStreamHandler",
-                        "max.num.retries": "3",
-                        "retries.defer.timeout": "5000",
-                        "errors.tolerance": "all",
-                        "errors.log.enable": "true",
-                        "errors.log.include.messages": "true",
-                        "errors.deadletterqueue.topic.name": "%s",
-                        "errors.deadletterqueue.context.headers.enable": "true",
-                        "errors.deadletterqueue.topic.replication.factor": "1",
-                        "consumer.override.security.protocol": "SASL_PLAINTEXT",
-                        "consumer.override.sasl.mechanism": "PLAIN",
-                        "consumer.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\\\"%s\\\" password=\\\"%s\\\";",
-                        "consumer.override.max.partition.fetch.bytes": "5242880",
-                        "consumer.override.fetch.max.bytes": "52428800"
-                    }
+            {
+                "name": "%s",
+                "config": {
+                    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+                    "tasks.max": "1",
+                    "topics": "%s",
+                    "connection.uri": "%s",
+                    "database": "%s",
+                    "collection": "%s",
+                    "key.converter.schemas.enable": "false",
+                    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+                    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+                    "value.converter.schemas.enable": "false",
+                    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInKeyStrategy",
+                    "key.projection.list": "_id",
+                    "document.id.strategy.overwrite.existing": "true",
+                    "change.data.capture.handler": "com.mongodb.kafka.connect.sink.cdc.mongodb.ChangeStreamHandler",
+                    "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy",
+                    "max.num.retries": "3",
+                    "retries.defer.timeout": "5000",
+                    "errors.tolerance": "all",
+                    "errors.log.enable": "true",
+                    "errors.log.include.messages": "true",
+                    "errors.deadletterqueue.topic.name": "%s",
+                    "errors.deadletterqueue.context.headers.enable": "true",
+                    "errors.deadletterqueue.topic.replication.factor": "1",
+                    "consumer.override.security.protocol": "SASL_PLAINTEXT",
+                    "consumer.override.sasl.mechanism": "PLAIN",
+                    "consumer.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\\\"%s\\\" password=\\\"%s\\\";",
+                    "consumer.override.max.partition.fetch.bytes": "5242880",
+                    "consumer.override.fetch.max.bytes": "52428800"
                 }
-                """
+            }
+            """
                 .formatted(
                         connectorName,
                         topicName,
