@@ -35,7 +35,7 @@ public class KafkaConnectorGenerator {
     // The MongoDB Kafka Connector expects seconds for startup.mode.timestamp
     // Example: date -d "2024-12-01 10:00:00" +%s
     // Alternative formats: ISO-8601 ('1970-01-01T00:00:30Z') or BSON Timestamp
-    private static final String START_TIMESTAMP = "1766405293";
+    private static final String START_TIMESTAMP = "1763968740";
 
     // --- SOURCE CREDENTIALS ---
     private static final String SOURCE_URI = "mongodb://admin:M0ng0DB%40P%40%24%24w0rd%21@10.169.24.26:27017/?replicaSet=rs1&authSource=admin";
@@ -99,7 +99,7 @@ public class KafkaConnectorGenerator {
     private static int failedSinkConnectors = 0;
 
     public static void main(String[] args) {
-        ConnectorOperation operation = ConnectorOperation.LIST;
+        ConnectorOperation operation = ConnectorOperation.CREATE;
         List<String> collections;
 
         if (args.length > 0) {
@@ -118,7 +118,7 @@ public class KafkaConnectorGenerator {
             System.out.println("Using collections from arguments: " + String.join(", ", collections));
         } else {
             // Default collections for testing
-            collections = List.of("mw_config", "playable_content");
+            collections = List.of("alerts", "mw_config");
             System.out.println("Using default collections: " + String.join(", ", collections));
         }
 
@@ -198,15 +198,15 @@ public class KafkaConnectorGenerator {
                       "database": "%s",
                       "collection": "%s",
                       "topic.prefix": "%s",
-                      "startup.mode": "timestamp",
-                      "startup.mode.timestamp.start.at.operation.time": "%s",
+                      "startup.mode": "latest",
                       "output.format.value": "json",
                       "output.format.key": "json",
                       "key.converter": "org.apache.kafka.connect.json.JsonConverter",
                       "value.converter": "org.apache.kafka.connect.json.JsonConverter",
                       "key.converter.schemas.enable": "false",
                       "value.converter.schemas.enable": "false",
-                      "publish.full.document.only": "false",
+                      "publish.full.document.only": "true",
+                      "publish.full.document.only.tombstone.on.delete": "true",
                       "change.stream.full.document": "updateLookup",
                       "errors.tolerance": "all",
                       "errors.log.enable": "true",
@@ -219,7 +219,6 @@ public class KafkaConnectorGenerator {
                 """
                 .formatted(
                         connectorName, SOURCE_URI, DATABASE, collectionName, TOPIC_PREFIX,
-                        START_TIMESTAMP,
                         SOURCE_USER, SOURCE_PASS);
 
         System.out.println("  → Creating Source: " + connectorName);
@@ -255,10 +254,8 @@ public class KafkaConnectorGenerator {
                         "value.converter": "org.apache.kafka.connect.json.JsonConverter",
                         "key.converter.schemas.enable": "false",
                         "value.converter.schemas.enable": "false",
-                        "key.projection.list": "_id",
-                        "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInKeyStrategy",
+                        "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.BsonOidStrategy",
                         "document.id.strategy.overwrite.existing": "true",
-                        "change.data.capture.handler": "com.mongodb.kafka.connect.sink.cdc.mongodb.ChangeStreamHandler",
                         "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy",
                         "max.num.retries": "3",
                         "retries.defer.timeout": "5000",
