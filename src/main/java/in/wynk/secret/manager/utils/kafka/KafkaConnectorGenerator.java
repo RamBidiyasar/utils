@@ -37,6 +37,12 @@ public class KafkaConnectorGenerator {
     // Alternative formats: ISO-8601 ('1970-01-01T00:00:30Z') or BSON Timestamp
     private static final String START_TIMESTAMP = "1763968740";
 
+    public enum StartupMode {
+        LATEST, TIMESTAMP, COPY_EXISTING
+    }
+
+    private static final StartupMode STARTUP_MODE = StartupMode.TIMESTAMP;
+
     // --- SOURCE CREDENTIALS ---
     private static final String SOURCE_URI = "mongodb://admin:M0ng0DB%40P%40%24%24w0rd%21@10.169.24.26:27017/?replicaSet=rs1&authSource=admin";
     private static final String SOURCE_USER = "appuser";
@@ -118,7 +124,7 @@ public class KafkaConnectorGenerator {
             System.out.println("Using collections from arguments: " + String.join(", ", collections));
         } else {
             // Default collections for testing
-            collections = List.of("alerts", "mw_config");
+            collections = List.of("alerts", "mw_config", "aggregation_config", "playable_content");
             System.out.println("Using default collections: " + String.join(", ", collections));
         }
 
@@ -187,6 +193,18 @@ public class KafkaConnectorGenerator {
     private static void createSourceConnector(String collectionName) {
         String connectorName = "source_" + collectionName;
 
+        String startupConfig;
+        if (STARTUP_MODE == StartupMode.TIMESTAMP) {
+            startupConfig = String.format("""
+                    "startup.mode": "timestamp",
+                          "startup.mode.timestamp.start.at.operation.time": "%s",
+                    """, START_TIMESTAMP);
+        } else {
+            startupConfig = String.format("""
+                    "startup.mode": "%s",
+                    """, STARTUP_MODE.name().toLowerCase());
+        }
+
         // JSON Generation
         String jsonPayload = """
                 {
@@ -198,7 +216,7 @@ public class KafkaConnectorGenerator {
                       "database": "%s",
                       "collection": "%s",
                       "topic.prefix": "%s",
-                      "startup.mode": "latest",
+                      %s
                       "output.format.value": "json",
                       "output.format.key": "json",
                       "key.converter": "org.apache.kafka.connect.storage.StringConverter",
@@ -219,6 +237,7 @@ public class KafkaConnectorGenerator {
                 """
                 .formatted(
                         connectorName, SOURCE_URI, DATABASE, collectionName, TOPIC_PREFIX,
+                        startupConfig.trim(),
                         SOURCE_USER, SOURCE_PASS);
 
         System.out.println("  → Creating Source: " + connectorName);
