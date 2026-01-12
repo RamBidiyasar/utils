@@ -62,7 +62,7 @@ public class KafkaCdcTimeWindowConsumer {
             KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps)) {
 
             // Get partitions
-            TopicDescription desc = admin.describeTopics(List.of(TOPIC)).all().get().get(TOPIC);
+            TopicDescription desc = admin.describeTopics(List.of(TOPIC)).topicNameValues().get(TOPIC).get();
             List<TopicPartition> partitions = desc.partitions()
                                                   .stream()
                                                   .map(p -> new TopicPartition(TOPIC, p.partition()))

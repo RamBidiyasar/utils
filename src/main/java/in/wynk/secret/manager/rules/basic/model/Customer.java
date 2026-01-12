@@ -1,13 +1,8 @@
 package in.wynk.secret.manager.rules.basic.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Sample Customer class.
  */
-@Getter
-@Setter
 public class Customer {
     private String customerName;
     private int clientAge;
@@ -18,4 +13,11 @@ public class Customer {
         this.clientAge = clientAge;
         this.locationCity = locationCity;
     }
+
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+    public int getClientAge() { return clientAge; }
+    public void setClientAge(int clientAge) { this.clientAge = clientAge; }
+    public String getLocationCity() { return locationCity; }
+    public void setLocationCity(String locationCity) { this.locationCity = locationCity; }
 }

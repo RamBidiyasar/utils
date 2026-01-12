@@ -1,8 +1,5 @@
 package in.wynk.secret.manager.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,26 +60,53 @@ public class UrlCheckerController {
         return result;
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     private static class UrlCheckResult {
         private String url;
         private boolean success;
         private String message;
 
+        public UrlCheckResult() {}
+
         public UrlCheckResult(String url) {
-            this.url =url;
+            this.url = url;
         }
+
+        public UrlCheckResult(String url, boolean success, String message) {
+            this.url = url;
+            this.success = success;
+            this.message = message;
+        }
+
+        public String getUrl() { return url; }
+        public void setUrl(String url) { this.url = url; }
+        public boolean isSuccess() { return success; }
+        public void setSuccess(boolean success) { this.success = success; }
+        public String getMessage() { return message; }
+        public void setMessage(String message) { this.message = message; }
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     private static class UrlCheckSummary {
         private int successCount;
         private int failureCount;
         private List<String> failedUrls;
         private List<UrlCheckResult> results;
+
+        public UrlCheckSummary() {}
+
+        public UrlCheckSummary(int successCount, int failureCount, List<String> failedUrls, List<UrlCheckResult> results) {
+            this.successCount = successCount;
+            this.failureCount = failureCount;
+            this.failedUrls = failedUrls;
+            this.results = results;
+        }
+
+        public int getSuccessCount() { return successCount; }
+        public void setSuccessCount(int successCount) { this.successCount = successCount; }
+        public int getFailureCount() { return failureCount; }
+        public void setFailureCount(int failureCount) { this.failureCount = failureCount; }
+        public List<String> getFailedUrls() { return failedUrls; }
+        public void setFailedUrls(List<String> failedUrls) { this.failedUrls = failedUrls; }
+        public List<UrlCheckResult> getResults() { return results; }
+        public void setResults(List<UrlCheckResult> results) { this.results = results; }
     }
 }

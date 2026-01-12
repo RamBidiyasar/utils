@@ -12,9 +12,13 @@ public class KafkaTopicLister {
 
     public static void main(String[] args) {
         // Replace with your Kafka bootstrap servers
-        String bootstrapServers = "10.161.24.22:9092,10.161.24.24:9092,10.161.24.23:9092";
+//        String bootstrapServers = "10.161.24.22:9092,10.161.24.24:9092,10.161.24.23:9092";
+//        String username = "appuser";
+//        String password = "uJK67AUDI1Ax";
+
+        String bootstrapServers = "10.169.24.13:9092";
         String username = "appuser";
-        String password = "uJK67AUDI1Ax";
+        String password = "uJK67dC1Ax";
 
         // Kafka AdminClient properties with security
         Properties properties = new Properties();

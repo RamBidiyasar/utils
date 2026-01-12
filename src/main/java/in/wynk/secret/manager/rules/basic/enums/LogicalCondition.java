@@ -1,15 +1,13 @@
 package in.wynk.secret.manager.rules.basic.enums;
 
-import lombok.Getter;
 import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 /**
  * Enum representing logical conditions (AND, OR) with behavior.
  */
-@Getter
 public enum LogicalCondition {
-    
+
     AND {
         @Override
         public boolean evaluate(List<Boolean> results) {

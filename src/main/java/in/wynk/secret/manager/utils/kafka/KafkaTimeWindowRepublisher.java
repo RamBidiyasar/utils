@@ -66,7 +66,7 @@ public class KafkaTimeWindowRepublisher {
              KafkaProducer<String, String> producer = new KafkaProducer<>(producerProps)) {
 
             // --- find partitions for topic ---
-            TopicDescription td = admin.describeTopics(Collections.singletonList(topic)).all().get().get(topic);
+            TopicDescription td = admin.describeTopics(Collections.singletonList(topic)).topicNameValues().get(topic).get();
             List<TopicPartition> partitions = td.partitions().stream()
                     .map(p -> new TopicPartition(topic, p.partition()))
                     .toList();

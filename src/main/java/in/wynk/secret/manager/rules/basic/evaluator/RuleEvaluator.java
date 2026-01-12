@@ -2,7 +2,6 @@ package in.wynk.secret.manager.rules.basic.evaluator;
 
 import in.wynk.secret.manager.rules.basic.config.RuleConfig;
 import in.wynk.secret.manager.rules.basic.strategy.MatchStrategyFactory;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -12,9 +11,12 @@ import java.util.stream.Collectors;
  * Evaluates rules dynamically using the match strategy pattern.
  */
 @Component
-@RequiredArgsConstructor
 public class RuleEvaluator {
     private final MatchStrategyFactory matchStrategyFactory;
+
+    public RuleEvaluator(MatchStrategyFactory matchStrategyFactory) {
+        this.matchStrategyFactory = matchStrategyFactory;
+    }
 
     public boolean evaluate(RuleConfig rule, Object obj1, Object obj2) throws Exception {
         if (rule.getRules() != null && !rule.getRules().isEmpty()) {

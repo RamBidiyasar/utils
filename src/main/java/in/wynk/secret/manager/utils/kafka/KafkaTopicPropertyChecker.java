@@ -29,7 +29,7 @@ public class KafkaTopicPropertyChecker {
 
             // --- Topic Description ---
             DescribeTopicsResult describeTopics = adminClient.describeTopics(Collections.singletonList(topicName));
-            TopicDescription topicDescription = describeTopics.values().get(topicName).get();
+            TopicDescription topicDescription = describeTopics.topicNameValues().get(topicName).get();
 
             int partitions = topicDescription.partitions().size();
             int replicationFactor = topicDescription.partitions().get(0).replicas().size();

@@ -30,14 +30,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@Slf4j
+
 public class GCSUtils {
 
     private static final Storage storage = StorageOptions.getDefaultInstance().getService();

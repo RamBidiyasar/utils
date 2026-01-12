@@ -35,7 +35,7 @@ public class KafkaConnectorGenerator {
     // The MongoDB Kafka Connector expects seconds for startup.mode.timestamp
     // Example: date -d "2024-12-01 10:00:00" +%s
     // Alternative formats: ISO-8601 ('1970-01-01T00:00:30Z') or BSON Timestamp
-    private static final String START_TIMESTAMP = "1763968740";
+    private static final String START_TIMESTAMP = "1767002071";
 
     public enum StartupMode {
         LATEST, TIMESTAMP, COPY_EXISTING
@@ -121,15 +121,14 @@ public class KafkaConnectorGenerator {
         // Usage: java KafkaConnectorGenerator CREATE mw_config,playable_content
         if (args.length > 1) {
             collections = Arrays.asList(args[1].split(","));
-            System.out.println("Using collections from arguments: " + String.join(", ", collections));
+            System.out.println("Using default collections: " + String.join(", ", collections));
         } else {
             // Default collections for testing
             collections = List.of("alerts", "mw_config", "aggregation_config", "playable_content");
-            System.out.println("Using default collections: " + String.join(", ", collections));
         }
 
         // All collections (commented for reference)
-        // List<String> allCollections = Arrays.asList("ltp_channel_inventory",
+        // collections = Arrays.asList("ltp_channel_inventory",
         // "sport_info", "promotional_event", "device_notification", "system.profile",
         // "sequence", "dummy_channel_info", "notification_store", "box_details",
         // "failed_wcf_events", "filtered_shows", "pages", "game_meta",
@@ -229,6 +228,8 @@ public class KafkaConnectorGenerator {
                       "errors.tolerance": "all",
                       "errors.log.enable": "true",
                       "producer.max.request.size": "5242880",
+                      "producer.enable.idempotence": "true",
+                      "producer.acks": "all",
                       "producer.override.security.protocol": "SASL_PLAINTEXT",
                       "producer.override.sasl.mechanism": "PLAIN",
                       "producer.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\\\"%s\\\" password=\\\"%s\\\";"
@@ -276,6 +277,11 @@ public class KafkaConnectorGenerator {
                         "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy",
                         "document.id.strategy.overwrite.existing": "true",
                         "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy",
+                        "max.batch.size": "500",
+                        "consumer.override.max.poll.records": "500",
+                        "consumer.override.fetch.max.wait.ms": "100",
+                        "consumer.session.timeout.ms": "45000",
+                        "consumer.heartbeat.interval.ms": "10000",
                         "max.num.retries": "3",
                         "retries.defer.timeout": "5000",
                         "errors.tolerance": "all",

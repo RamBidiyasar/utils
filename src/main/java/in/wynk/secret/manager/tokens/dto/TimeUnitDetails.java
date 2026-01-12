@@ -6,16 +6,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 /**
- * A utility class that represents a time duration with a specific {@link TimeUnit} and its corresponding value. This class provides methods to create
- * instances of time durations for different {@link TimeUnit}s and convert them to milliseconds or obtain a human-readable format for the duration.
+ * A utility class that represents a time duration with a specific {@link TimeUnit} and its corresponding value.
  */
-@Data
-@NoArgsConstructor
 public class TimeUnitDetails implements Serializable {
     @Serial
     private static final long serialVersionUID = 407263101909166486L;
@@ -23,20 +18,18 @@ public class TimeUnitDetails implements Serializable {
     private TimeUnit unit;
     private Long value;
 
-    /**
-     * Constructor
-     */
+    public TimeUnitDetails() {}
+
     public TimeUnitDetails(final TimeUnit unit, final Long value) {
         this.unit = unit;
         this.value = value;
     }
 
-    /**
-     * Creates a new {@code TimeUnitDetails} instance with the specified duration in milliseconds.
-     *
-     * @param time The duration in milliseconds.
-     * @return A {@code TimeUnitDetails} instance with the specified duration in milliseconds.
-     */
+    public TimeUnit getUnit() { return unit; }
+    public void setUnit(TimeUnit unit) { this.unit = unit; }
+    public Long getValue() { return value; }
+    public void setValue(Long value) { this.value = value; }
+
     public static TimeUnitDetails ofMilli(final long time) {
         final TimeUnitDetails unitDetails = new TimeUnitDetails();
         unitDetails.setUnit(TimeUnit.MILLISECONDS);
@@ -44,12 +37,6 @@ public class TimeUnitDetails implements Serializable {
         return unitDetails;
     }
 
-    /**
-     * Creates a new {@code TimeUnitDetails} instance with the specified duration in seconds.
-     *
-     * @param time The duration in seconds.
-     * @return A {@code TimeUnitDetails} instance with the specified duration in seconds.
-     */
     public static TimeUnitDetails ofSeconds(final long time) {
         final TimeUnitDetails unitDetails = new TimeUnitDetails();
         unitDetails.setUnit(TimeUnit.SECONDS);
@@ -57,12 +44,6 @@ public class TimeUnitDetails implements Serializable {
         return unitDetails;
     }
 
-    /**
-     * Creates a new {@code TimeUnitDetails} instance with the specified duration in minutes.
-     *
-     * @param time The duration in minutes.
-     * @return A {@code TimeUnitDetails} instance with the specified duration in minutes.
-     */
     public static TimeUnitDetails ofMinutes(final long time) {
         final TimeUnitDetails unitDetails = new TimeUnitDetails();
         unitDetails.setUnit(TimeUnit.MINUTES);
@@ -70,12 +51,6 @@ public class TimeUnitDetails implements Serializable {
         return unitDetails;
     }
 
-    /**
-     * Creates a new {@code TimeUnitDetails} instance with the specified duration in hours.
-     *
-     * @param time The duration in hours.
-     * @return A {@code TimeUnitDetails} instance with the specified duration in hours.
-     */
     public static TimeUnitDetails ofHours(final long time) {
         final TimeUnitDetails unitDetails = new TimeUnitDetails();
         unitDetails.setUnit(TimeUnit.HOURS);
@@ -83,12 +58,6 @@ public class TimeUnitDetails implements Serializable {
         return unitDetails;
     }
 
-    /**
-     * Creates a new {@code TimeUnitDetails} instance with the specified duration in days.
-     *
-     * @param time The duration in days.
-     * @return A {@code TimeUnitDetails} instance with the specified duration in days.
-     */
     public static TimeUnitDetails ofDays(final long time) {
         final TimeUnitDetails unitDetails = new TimeUnitDetails();
         unitDetails.setUnit(TimeUnit.DAYS);
@@ -96,24 +65,10 @@ public class TimeUnitDetails implements Serializable {
         return unitDetails;
     }
 
-    /**
-     * This will return the current object time details in millis
-     *
-     * @return : time in millis
-     */
     public Long toMillis() {
         return unit.toMillis(getValue());
     }
 
-    /**
-     * Gets the readable duration in words format for the current TimeUnitDetails object. The method converts the time value represented by the
-     * TimeUnitDetails object into a human-readable format, providing an approximate representation of the time duration using words like "2 days 5
-     * hours 30 minutes".
-     *
-     * @return the readable duration in words format.
-     * @see TimeUnitDetails#toMillis() for converting TimeUnitDetails to milliseconds.
-     * @see DurationFormatUtils#formatDurationWords(long, boolean, boolean) for formatting the duration in words.
-     */
     @JsonIgnore
     public String getReadableDuration() {
         return DurationFormatUtils.formatDurationWords(toMillis(), true, true);
@@ -154,7 +109,7 @@ public class TimeUnitDetails implements Serializable {
         } else if (seconds == 1) {
             return "1 SECOND";
         } else {
-            return "0 " + lowestUnit.name(); // Handle the case when milliseconds are less than 1 unit
+            return "0 " + lowestUnit.name();
         }
     }
 }

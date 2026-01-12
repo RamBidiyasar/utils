@@ -1,7 +1,7 @@
 package in.wynk.secret.manager.utils.time;
  
 import org.springframework.http.*;
-import org.springframework.util.Base64Utils;
+import java.util.Base64;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
  
@@ -151,7 +151,7 @@ public class SecretSantaNotifyRunnerV2 {
     private static HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         String auth = AUTH_USERNAME + ":" + AUTH_PASSWORD;
-        String authHeader = "Basic " + new String(Base64Utils.encode(auth.getBytes()));
+        String authHeader = "Basic " + new String(Base64.getEncoder().encode(auth.getBytes()));
         headers.set("Authorization", authHeader);
         headers.set("x-basic-auth-client", BASIC_AUTH_CLIENT);
         headers.setContentType(MediaType.APPLICATION_JSON);

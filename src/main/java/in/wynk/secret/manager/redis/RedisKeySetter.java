@@ -25,7 +25,7 @@ public class RedisKeySetter {
 
 //        List<String> listIps = List.of("10.161.24.66","10.161.24.67");
 
-        List<String> listIps = List.of("10.169.24.15","10.169.24.20");
+          List<String> listIps = List.of("10.169.24.15","10.169.24.20");
           String password = "MysTr0ngP@ssw0rd@123";
 //        String key = "arsenal-complete-axsta_x00i64981739954868922";
 //        String key = "user-recent-fav-sync4FenZf3OmeMC934S30";
@@ -33,7 +33,7 @@ public class RedisKeySetter {
 
 
 //        String key = "user-recent-fav-syncRhHxbpwCd4ayFgwY60";
-        String key = "user-subs-info-1r3PkHTZcCw6pwtYB0";
+        String key = "wcfPlan-79007";
 
 
         String value = """
@@ -47,7 +47,7 @@ public class RedisKeySetter {
             }
             """;
         List<String> responses = new ArrayList<>();
-        Operation OPERATION = Operation.GET;
+        Operation OPERATION = Operation.DEL;
 
         for (String ip : listIps) {
             try (Jedis jedis = new Jedis(ip, 6379)) {

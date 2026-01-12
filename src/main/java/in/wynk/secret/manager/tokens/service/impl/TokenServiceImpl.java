@@ -10,7 +10,6 @@ import in.wynk.secret.manager.tokens.dto.TokenValidateResponse;
 import in.wynk.secret.manager.tokens.service.TokenService;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
-import java.time.Duration;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -18,17 +17,18 @@ import java.util.Map;
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
 
     private static final String SECRET_KEY = "b3a8ee7c2b7d45d7a99bda4c38e0ad11"; // 32-char = 32-byte (256-bit)
     private static final int IV_LENGTH = 12;
     private final SecureRandom secureRandom = new SecureRandom();
+
+    public TokenServiceImpl() {
+    }
 
     @Override
     public TokenCreateResponse createTokens(TokenCreateRequest request) {

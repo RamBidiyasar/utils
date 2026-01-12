@@ -128,7 +128,7 @@ public class KafkaTimeWindowRepublisherFinal {
             KafkaProducer<String, String> producer = new KafkaProducer<>(producerProps)) {
 
             System.out.println("Step 1: Calculating start and end offsets for all partitions...");
-            TopicDescription td = admin.describeTopics(Collections.singletonList(topic)).all().get().get(topic);
+            TopicDescription td = admin.describeTopics(Collections.singletonList(topic)).topicNameValues().get(topic).get();
             List<TopicPartition> allPartitions = td.partitions().stream().map(p -> new TopicPartition(topic, p.partition())).toList();
 
             Map<TopicPartition, OffsetSpec> startReq = allPartitions.stream().collect(Collectors.toMap(tp -> tp, tp -> OffsetSpec.forTimestamp(startTimestamp)));
