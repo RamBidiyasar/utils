@@ -7,6 +7,10 @@ import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 public class KafkaEventTypeStats {
 
     private static final String TOPIC = "atv-events-prod-iptv";
-    
+
     // Configurable lookback duration (e.g., 1 hour)
     private static final Duration LOOKBACK = Duration.ofMinutes(5);
 
@@ -29,10 +33,12 @@ public class KafkaEventTypeStats {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final DateTimeFormatter HOURLY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00");
     private static final DateTimeFormatter DAILY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    
+
     // Thread Pool Size
     private static final int THREAD_COUNT = 4;
     private static final long MAX_TOTAL_EVENTS = 10000;
+
+    private static final String OUTPUT_FILE = "kafka_stats_output.txt";
 
     public static void main(String[] args) {
         String bootstrap = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
@@ -44,18 +50,18 @@ public class KafkaEventTypeStats {
         long startTime = now - LOOKBACK.toMillis();
         long endTime = now;
 
-        System.out.printf("Time Window: %s to %s%n", 
-            Instant.ofEpochMilli(startTime).atZone(IST), 
-            Instant.ofEpochMilli(endTime).atZone(IST));
+        log(String.format("Time Window: %s to %s",
+                Instant.ofEpochMilli(startTime).atZone(IST),
+                Instant.ofEpochMilli(endTime).atZone(IST)));
 
         Properties common = new Properties();
         common.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         common.put("security.protocol", "SASL_PLAINTEXT");
         common.put("sasl.mechanism", "PLAIN");
         common.put("sasl.jaas.config",
-                   "org.apache.kafka.common.security.plain.PlainLoginModule required " +
-                   "username=\"" + username + "\" password=\"" + password + "\";");
-        
+                "org.apache.kafka.common.security.plain.PlainLoginModule required " +
+                        "username=\"" + username + "\" password=\"" + password + "\";");
+
         common.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, "60000");
         common.put(AdminClientConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, "60000");
 
@@ -66,8 +72,8 @@ public class KafkaEventTypeStats {
         baseProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         baseProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         baseProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        baseProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none"); 
-        baseProps.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "45000"); 
+        baseProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none");
+        baseProps.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "45000");
         baseProps.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, "60000");
         baseProps.put(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, "60000");
 
@@ -91,16 +97,16 @@ public class KafkaEventTypeStats {
             // 2. Get Partitions
             System.out.println("Connecting to AdminClient to describe topics...");
             TopicDescription desc = admin.describeTopics(List.of(TOPIC)).topicNameValues().get(TOPIC).get();
-            List<TopicPartition> partitions = desc.partitions() 
-                                                  .stream() 
-                                                  .map(p -> new TopicPartition(TOPIC, p.partition())).collect(Collectors.toUnmodifiableList());
+            List<TopicPartition> partitions = desc.partitions()
+                    .stream()
+                    .map(p -> new TopicPartition(TOPIC, p.partition())).collect(Collectors.toUnmodifiableList());
 
 
             // 3. Look up Offsets for Time Window
             System.out.println("Fetching offsets for time window...");
             Map<TopicPartition, OffsetSpec> reqStart = new HashMap<>();
             Map<TopicPartition, OffsetSpec> reqEnd = new HashMap<>();
-            
+
             for (TopicPartition tp : partitions) {
                 reqStart.put(tp, OffsetSpec.forTimestamp(startTime));
                 reqEnd.put(tp, OffsetSpec.forTimestamp(endTime));
@@ -119,10 +125,10 @@ public class KafkaEventTypeStats {
 
                 long s = (startRes != null && startRes.offset() != -1) ? startRes.offset() : -1;
                 long e = (endRes != null && endRes.offset() != -1) ? endRes.offset() : -1;
-                
+
                 if (s != -1) {
                     if (e == -1 || e < s) {
-                         e = Long.MAX_VALUE;
+                        e = Long.MAX_VALUE;
                     }
 
                     if (s < e) {
@@ -151,12 +157,12 @@ public class KafkaEventTypeStats {
             // 4. Distribute Partitions to Threads
             int partitionCount = activePartitions.size();
             System.out.println("Distributing " + partitionCount + " partitions across " + THREAD_COUNT + " threads.");
-            
+
             List<Future<?>> futures = new ArrayList<>();
-            
+
             List<List<TopicPartition>> partitionsPerThread = new ArrayList<>();
             for (int i = 0; i < THREAD_COUNT; i++) partitionsPerThread.add(new ArrayList<>());
-            
+
             for (int i = 0; i < partitionCount; i++) {
                 partitionsPerThread.get(i % THREAD_COUNT).add(activePartitions.get(i));
             }
@@ -179,7 +185,7 @@ public class KafkaEventTypeStats {
                     e.printStackTrace();
                 }
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -188,104 +194,126 @@ public class KafkaEventTypeStats {
 
         // 5. Report
         long total = totalEvents.get();
-        
-        System.out.println("\n[REPORT] Event Type Statistics (Last " + LOOKBACK.toHours() + " hours)");
-        System.out.println("------------------------------------------------");
-        System.out.printf("%-30s | %-10s | %-10s%n", "Event Type", "Count", "Percentage");
-        System.out.println("------------------------------------------------");
+
+        // Clear previous output file content
+        try (PrintWriter writer = new PrintWriter(OUTPUT_FILE)) {
+            writer.print("");
+        } catch (IOException e) {
+            System.err.println("Error clearing output file: " + e.getMessage());
+        }
+
+        log("\n[REPORT] Event Type Statistics (Last " + LOOKBACK.toHours() + " hours)");
+        log("------------------------------------------------");
+        log(String.format("%-30s | %-10s | %-10s", "Event Type", "Count", "Percentage"));
+        log("------------------------------------------------");
 
         if (total == 0) {
-            System.out.println("No events found.");
+            log("No events found.");
         } else {
-            eventCounts.entrySet().stream() 
-                .sorted((a, b) -> Long.compare(b.getValue().get(), a.getValue().get())) // Descending
-                .forEach(entry -> { 
-                    String type = entry.getKey();
-                    long count = entry.getValue().get();
-                    double percent = (count * 100.0) / total;
-                    System.out.printf("%-30s | %-10d | %6.2f%%%n", type, count, percent);
-                });
-            System.out.println("------------------------------------------------");
-            System.out.println("Total Events: " + total);
+            eventCounts.entrySet().stream()
+                    .sorted((a, b) -> Long.compare(b.getValue().get(), a.getValue().get())) // Descending
+                    .forEach(entry -> {
+                        String type = entry.getKey();
+                        long count = entry.getValue().get();
+                        double percent = (count * 100.0) / total;
+                        log(String.format("%-30s | %-10d | %6.2f%%", type, count, percent));
+                    });
+            log("------------------------------------------------");
+            log("Total Events: " + total);
         }
 
         // DID Report
-        System.out.println("\n[REPORT] DID Statistics (Top 20)");
-        System.out.println("Total Unique DIDs: " + didCounts.size());
-        System.out.println("------------------------------------------------");
-        System.out.printf("%-30s | %-10s | %-10s%n", "DID", "Count", "Percentage");
-        System.out.println("------------------------------------------------");
+        log("\n[REPORT] DID Statistics (Top 20)");
+        log("Total Unique DIDs: " + didCounts.size());
+        log("------------------------------------------------");
+        log(String.format("%-30s | %-10s | %-10s", "DID", "Count", "Percentage"));
+        log("------------------------------------------------");
 
         if (didCounts.isEmpty()) {
-            System.out.println("No DID data found.");
+            log("No DID data found.");
         } else {
             didCounts.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().get(), a.getValue().get())) // Descending
-                .limit(20)
-                .forEach(entry -> {
-                    String did = entry.getKey();
-                    long count = entry.getValue().get();
-                    double percent = (total > 0) ? (count * 100.0) / total : 0.0;
-                    System.out.printf("%-30s | %-10d | %6.2f%%%n", did, count, percent);
-                });
-            System.out.println("------------------------------------------------");
+                    .sorted((a, b) -> Long.compare(b.getValue().get(), a.getValue().get())) // Descending
+                    .limit(20)
+                    .forEach(entry -> {
+                        String did = entry.getKey();
+                        long count = entry.getValue().get();
+                        double percent = (total > 0) ? (count * 100.0) / total : 0.0;
+                        log(String.format("%-30s | %-10d | %6.2f%%", did, count, percent));
+                    });
+            log("------------------------------------------------");
         }
 
 //        // Time Series Report (Minute-wise)
-//        System.out.println("\n[REPORT] Events by Time (Minute-wise)");
-//        System.out.println("------------------------------------------------");
-//        System.out.printf("%-20s | %-10s | %-10s%n", "Time (IST)", "Count", "Percentage");
-//        System.out.println("------------------------------------------------");
+//        log("\n[REPORT] Events by Time (Minute-wise)");
+//        log("------------------------------------------------");
+//        log(String.format("%-20s | %-10s | %-10s", "Time (IST)", "Count", "Percentage"));
+//        log("------------------------------------------------");
 //
 //        if (timeCounts.isEmpty()) {
-//             System.out.println("No time data available.");
+//            log("No time data available.");
 //        } else {
 //            timeCounts.forEach((time, count) -> {
 //                long c = count.get();
 //                double p = (total > 0) ? (c * 100.0) / total : 0.0;
-//                System.out.printf("%-20s | %-10d | %6.2f%%%n", time, c, p);
+//                log(String.format("%-20s | %-10d | %6.2f%%", time, c, p));
 //            });
-//            System.out.println("------------------------------------------------");
+//            log("------------------------------------------------");
 //        }
 
         // Time Series Report (Hourly)
-        System.out.println("\n[REPORT] Events by Time (Hourly)");
-        System.out.println("------------------------------------------------");
-        System.out.printf("%-20s | %-10s | %-10s%n", "Time (IST)", "Count", "Percentage");
-        System.out.println("------------------------------------------------");
-        
+        log("\n[REPORT] Events by Time (Hourly)");
+        log("------------------------------------------------");
+        log(String.format("%-20s | %-10s | %-10s", "Time (IST)", "Count", "Percentage"));
+        log("------------------------------------------------");
+
         if (hourlyCounts.isEmpty()) {
-             System.out.println("No hourly data available.");
+            log("No hourly data available.");
         } else {
             hourlyCounts.forEach((time, count) -> {
                 long c = count.get();
                 double p = (total > 0) ? (c * 100.0) / total : 0.0;
-                System.out.printf("%-20s | %-10d | %6.2f%%%n", time, c, p);
+                log(String.format("%-20s | %-10d | %6.2f%%", time, c, p));
             });
-            System.out.println("------------------------------------------------");
+            log("------------------------------------------------");
         }
 
         // Time Series Report (Daily)
-        System.out.println("\n[REPORT] Events by Time (Daily)");
-        System.out.println("------------------------------------------------");
-        
+        log("\n[REPORT] Events by Time (Daily)");
+        log("------------------------------------------------");
+        log(String.format("%-20s | %-10s | %-10s", "Time (IST)", "Count", "Percentage"));
+        log("------------------------------------------------");
+
         if (dailyCounts.isEmpty()) {
-             System.out.println("No daily data available.");
+            log("No daily data available.");
         } else {
             dailyCounts.forEach((time, count) -> {
                 long c = count.get();
                 double p = (total > 0) ? (c * 100.0) / total : 0.0;
-                System.out.printf("%-20s | %-10d | %6.2f%%%n", time, c, p);
+                log(String.format("%-20s | %-10d | %6.2f%%", time, c, p));
             });
-            System.out.println("------------------------------------------------");
+            log("------------------------------------------------");
+        }
+
+        System.out.println("Output written to: " + OUTPUT_FILE);
+    }
+
+    private static void log(String message) {
+        System.out.println(message);
+        try (FileWriter fw = new FileWriter(OUTPUT_FILE, true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println(message);
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
         }
     }
 
-    private static void processPartitions(int threadId, 
-                                          List<TopicPartition> partitions, 
-                                          Properties baseProps, 
-                                          Map<TopicPartition, Long> startOffsets, 
-                                          Map<TopicPartition, Long> endOffsets, 
+    private static void processPartitions(int threadId,
+                                          List<TopicPartition> partitions,
+                                          Properties baseProps,
+                                          Map<TopicPartition, Long> startOffsets,
+                                          Map<TopicPartition, Long> endOffsets,
                                           long endTime,
                                           ConcurrentHashMap<String, AtomicLong> counts,
                                           ConcurrentHashMap<String, AtomicLong> didCounts,
@@ -293,20 +321,20 @@ public class KafkaEventTypeStats {
                                           ConcurrentSkipListMap<String, AtomicLong> hourlyCounts,
                                           ConcurrentSkipListMap<String, AtomicLong> dailyCounts,
                                           AtomicLong total) {
-        
+
         Properties props = new Properties();
         props.putAll(baseProps);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "stats-worker-" + threadId + "-" + UUID.randomUUID());
-        
+
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
             consumer.assign(partitions);
             for (TopicPartition tp : partitions) {
                 consumer.seek(tp, startOffsets.get(tp));
             }
-            
+
             Set<TopicPartition> remaining = new HashSet<>(partitions);
             int emptyPolls = 0;
-            final int MAX_EMPTY_POLLS = 30; 
+            final int MAX_EMPTY_POLLS = 30;
 
             System.out.println("[Thread-" + threadId + "] Started consuming " + partitions.size() + " partitions.");
 
@@ -317,7 +345,7 @@ public class KafkaEventTypeStats {
                 }
 
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
-                
+
                 if (records.isEmpty()) {
                     emptyPolls++;
                     if (emptyPolls >= MAX_EMPTY_POLLS) {
@@ -334,25 +362,25 @@ public class KafkaEventTypeStats {
                     if (!remaining.contains(tp)) continue;
 
                     long endOff = endOffsets.getOrDefault(tp, Long.MAX_VALUE);
-                    
+
                     if (rec.offset() >= endOff || rec.timestamp() > endTime) {
                         remaining.remove(tp);
-                        continue; 
+                        continue;
                     }
-                    
+
                     if (rec.offset() < endOff && rec.timestamp() <= endTime) {
-                         processRecord(rec.value(), counts, didCounts, timeCounts, hourlyCounts, dailyCounts, total);
+                        processRecord(rec.value(), counts, didCounts, timeCounts, hourlyCounts, dailyCounts, total);
                     }
                 }
             }
             System.out.println("[Thread-" + threadId + "] Finished.");
-            
+
         } catch (Exception e) {
             System.err.println("[Thread-" + threadId + "] Error: " + e.getMessage());
         }
     }
 
-    private static void processRecord(String json, 
+    private static void processRecord(String json,
                                       ConcurrentHashMap<String, AtomicLong> counts,
                                       ConcurrentHashMap<String, AtomicLong> didCounts,
                                       ConcurrentSkipListMap<String, AtomicLong> timeCounts,
@@ -367,8 +395,9 @@ public class KafkaEventTypeStats {
                     for (JsonNode event : eventsArray) {
                         if (event.has("event_type")) {
                             String type = event.get("event_type").asText("UNKNOWN");
+
                             counts.computeIfAbsent(type, k -> new AtomicLong(0)).incrementAndGet();
-                            
+
                             String did = event.has("did") ? event.get("did").asText("UNKNOWN") : "UNKNOWN";
                             didCounts.computeIfAbsent(did, k -> new AtomicLong(0)).incrementAndGet();
 
@@ -388,7 +417,7 @@ public class KafkaEventTypeStats {
 
                 String did = root.has("did") ? root.get("did").asText("UNKNOWN") : "UNKNOWN";
                 didCounts.computeIfAbsent(did, k -> new AtomicLong(0)).incrementAndGet();
-                
+
                 long ts = root.has("ts") ? root.get("ts").asLong() : System.currentTimeMillis();
                 timeCounts.computeIfAbsent(formatTime(ts), k -> new AtomicLong(0)).incrementAndGet();
                 hourlyCounts.computeIfAbsent(formatHour(ts), k -> new AtomicLong(0)).incrementAndGet();
@@ -404,7 +433,7 @@ public class KafkaEventTypeStats {
     private static String formatTime(long epochMillis) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), IST).format(TIME_FORMATTER);
     }
-    
+
     private static String formatHour(long epochMillis) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), IST).format(HOURLY_FORMATTER);
     }
