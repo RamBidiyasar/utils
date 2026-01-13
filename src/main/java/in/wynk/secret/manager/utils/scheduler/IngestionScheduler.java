@@ -50,16 +50,14 @@ public class IngestionScheduler {
         System.out.println("Running ingestion at: " + LocalDateTime.now());
         System.out.println("Using timestamp: " + currentTimestamp);
 
-        String requestBody = String.format("""
-                                               {
-                                                 "currentTime": %d,
-                                                 "hours": 240,
-                                                 "intervals": 6,
-                                                 "toRunIngestionInRange": true,
-                                                 "intervalsToSkip": 0,
-                                                 "updatesOnly": false
-                                               }
-                                               """, currentTimestamp);
+        String requestBody = String.format("{\n" +
+                                               "  \"currentTime\": %d,\n" +
+                                               "  \"hours\": 240,\n" +
+                                               "  \"intervals\": 6,\n" +
+                                               "  \"toRunIngestionInRange\": true,\n" +
+                                               "  \"intervalsToSkip\": 0,\n" +
+                                               "  \"updatesOnly\": false\n" +
+                                               "}", currentTimestamp);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()

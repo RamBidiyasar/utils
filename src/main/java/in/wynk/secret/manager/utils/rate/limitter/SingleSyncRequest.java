@@ -21,9 +21,7 @@ public class SingleSyncRequest {
                     .connectTimeout(Duration.ofSeconds(5))
                     .build();
 
-            String json = """
-                    {"recents":{"add":[],"remove":[]},"favourites":{"add":[{"contentId":"TIMESPLAY_MOVIE_movie_245","lastUpdatedTimeStamp":1749561071101,"lastWatchedPosition":0,"langId":"","subtitle":""},{"contentId":"TIMESPLAY_MOVIE_movie_240","lastUpdatedTimeStamp":1749561072669,"lastWatchedPosition":0,"langId":"","subtitle":""}],"remove":[]}}
-                    """;
+            String json = "{\"recents\":{\"add\":[],\"remove\":[]},\"favourites\":{\"add\":[{\"contentId\":\"TIMESPLAY_MOVIE_movie_245\",\"lastUpdatedTimeStamp\":1749561071101,\"lastWatchedPosition\":0,\"langId\":\"\",\"subtitle\":\"\"},{\"contentId\":\"TIMESPLAY_MOVIE_movie_240\",\"lastUpdatedTimeStamp\":1749561072669,\"lastWatchedPosition\":0,\"langId\":\"\",\"subtitle\":\"\"}],\"remove\":[]}}";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://sync-preprod.wynk.in/v4/user/content/sync?appId=WEB&diff=true"))

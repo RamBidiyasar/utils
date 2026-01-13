@@ -26,7 +26,7 @@ public class KafkaEventTypeStats {
     private static final String TOPIC = "atv-events-prod-iptv";
 
     // Configurable lookback duration (e.g., 1 hour)
-    private static final Duration LOOKBACK = Duration.ofMinutes(5);
+    private static final Duration LOOKBACK = Duration.ofMinutes(2);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final ZoneId IST = ZoneId.of("Asia/Kolkata");

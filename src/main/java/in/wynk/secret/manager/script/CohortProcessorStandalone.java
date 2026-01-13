@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class CohortProcessorStandalone {
 
-    private static final String CSV_FILE = "LOB-CO.csv";
+    private static final String CSV_FILE = "/Users/B0296099/Documents/Learning/Secret Manager/src/main/java/in/wynk/secret/manager/script/failed_records.csv";
     private static final String API_URL = "http://user-consumer-prod.internal.airtel.tv/s2s/v1/solace/message/dart";
     private static final boolean SEND_REQUESTS = true;
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -58,7 +58,7 @@ public class CohortProcessorStandalone {
     public void processCohortData() {
         System.out.println("Starting processing of " + CSV_FILE);
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ClassPathResource(CSV_FILE).getInputStream(), StandardCharsets.UTF_8));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(CSV_FILE), StandardCharsets.UTF_8));
              CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim())) {
 
             int count = 0;
@@ -70,7 +70,6 @@ public class CohortProcessorStandalone {
                 String referenceId = record.isMapped("reference_id") ? record.get("reference_id") : null;
                 String si = record.isMapped("si") ? record.get("si") : null;
                 String uid = record.isMapped("uid") ? record.get("uid") : null;
-                String planId = "99000";
                 String cohort = record.isMapped("cohort") ? record.get("cohort") : null;
                 String validTillStr = record.isMapped("valid_till") ? record.get("valid_till") : null;
 
@@ -82,9 +81,7 @@ public class CohortProcessorStandalone {
                 }
 
                 String rtn = si.split("_")[0];
-                String lob = LOB_MAP.getOrDefault(planId, "UNKNOWN");
-
-                System.out.println("plan_id: " + planId + ", lob: " + lob);
+                String lob = si.split("_")[1];
 
                 String thanksExpiry = null;
                 if (validTillStr != null && !validTillStr.isBlank()) {

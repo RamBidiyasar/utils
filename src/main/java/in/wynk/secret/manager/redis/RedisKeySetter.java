@@ -36,16 +36,14 @@ public class RedisKeySetter {
         String key = "wcfPlan-79007";
 
 
-        String value = """
-            {
-              "success": true,
-              "statusCode": 200,
-              "body": {
-                "valid": true,
-                "ivUser": "+916005013123"
-              }
-            }
-            """;
+        String value = "{\n" +
+            "  \"success\": true,\n" +
+            "  \"statusCode\": 200,\n" +
+            "  \"body\": {\n" +
+            "    \"valid\": true,\n" +
+            "    \"ivUser\": \"+916005013123\"\n" +
+            "  }\n" +
+            "}";
         List<String> responses = new ArrayList<>();
         Operation OPERATION = Operation.DEL;
 

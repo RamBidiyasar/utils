@@ -9,12 +9,14 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class KafkaTopicCreatorWithRetention {
+    public static final int RETENTION_HOURS = 1;
 
     public static void main(String[] args) {
         String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
         String topicName = "atv-events-prod-iptv";
         String username = "appuser";
         String password = "uJK67AUDI1Ax";
+
 
 
 //        String bootstrapServers = "10.169.24.13:9092";
@@ -45,8 +47,8 @@ public class KafkaTopicCreatorWithRetention {
             }
 
             ConfigResource configResource = new ConfigResource(Type.TOPIC, topicName);
-            int minutes = 2880;
-            ConfigEntry retentionEntry = new ConfigEntry("retention.ms", String.valueOf(TimeUnit.MINUTES.toMillis(minutes)));
+
+            ConfigEntry retentionEntry = new ConfigEntry("retention.ms", String.valueOf(TimeUnit.HOURS.toMillis(RETENTION_HOURS)));
 
             Map<ConfigResource, Collection<AlterConfigOp>> configUpdates = Collections.singletonMap(
                 configResource,
@@ -54,7 +56,7 @@ public class KafkaTopicCreatorWithRetention {
             );
 
             adminClient.incrementalAlterConfigs(configUpdates).all().get();
-            System.out.println("Retention updated to " + minutes  + " hours for topic: " + topicName);
+            System.out.println("Retention updated to " + RETENTION_HOURS + " hours for topic: " + topicName);
 
         } catch (InterruptedException | ExecutionException e) {
             System.err.println("Error managing topic: " + e.getMessage());

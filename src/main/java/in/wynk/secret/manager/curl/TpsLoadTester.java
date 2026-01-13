@@ -12,23 +12,21 @@ public class TpsLoadTester {
     private static final int TPS = 200; // Target Transactions Per Second
     private static final String URL = "https://sync-preprod.wynk.in/v4/user/content/sync?appId=WEB&diff=true";
 
-    private static final String REQUEST_BODY = """
-        {
-            "recents": {"add": [], "remove": []},
-            "favourites": {
-                "add": [
-                    {
-                        "contentId": "DOCUBAY_MOVIE_4386",
-                        "lastUpdatedTimeStamp": 1749548429560,
-                        "lastWatchedPosition": 0,
-                        "langId": "",
-                        "subtitle": ""
-                    }
-                ],
-                "remove": []
-            }
-        }
-        """;
+    private static final String REQUEST_BODY = "{\n" +
+            "    \"recents\": {\"add\": [], \"remove\": []},\n" +
+            "    \"favourites\": {\n" +
+            "        \"add\": [\n" +
+            "            {\n" +
+            "                \"contentId\": \"DOCUBAY_MOVIE_4386\",\n" +
+            "                \"lastUpdatedTimeStamp\": 1749548429560,\n" +
+            "                \"lastWatchedPosition\": 0,\n" +
+            "                \"langId\": \"\",\n" +
+            "                \"subtitle\": \"\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"remove\": []\n" +
+            "    }\n" +
+            "}";
 
     private static final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
