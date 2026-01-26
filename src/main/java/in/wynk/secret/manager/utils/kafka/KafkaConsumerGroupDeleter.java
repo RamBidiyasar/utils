@@ -10,11 +10,19 @@ public class KafkaConsumerGroupDeleter {
 
     public static void main(String[] args) {
 
-        String bootstrapServers = "10.161.24.22:9092,10.161.24.24:9092,10.161.24.23:9092";
-        String topic = "xstream-wcf-events";
+
+        final String bootstrapServers = "10.164.88.21:9092,10.164.88.22:9092,10.164.88.23:9092";
         String username = "appuser";
         String password = "uJK67AUDI1Ax";
-        String consumerGroup = "republisher-1757430174";
+        String topic = "msp.msp.content";
+        String consumerGroup = "msp-processor-group-0ebe7973-97a1-4f62-b880-5d595a96e1f6";
+//
+//
+//        String bootstrapServers = "10.161.24.22:9092,10.161.24.24:9092,10.161.24.23:9092";
+//        String topic = "xstream-wcf-events";
+//        String username = "appuser";
+//        String password = "uJK67AUDI1Ax";
+//        String consumerGroup = "republisher-1757430174";
 
         Properties props = new Properties();
         props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);

@@ -33,7 +33,7 @@ public class RedisKeySetter {
 
 
 //        String key = "user-recent-fav-syncRhHxbpwCd4ayFgwY60";
-        String key = "wcfPlan-79007";
+        String key = "wcfPlan-310011";
 
 
         String value = "{\n" +
@@ -45,7 +45,7 @@ public class RedisKeySetter {
             "  }\n" +
             "}";
         List<String> responses = new ArrayList<>();
-        Operation OPERATION = Operation.DEL;
+        Operation OPERATION = Operation.GET;
 
         for (String ip : listIps) {
             try (Jedis jedis = new Jedis(ip, 6379)) {

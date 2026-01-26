@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class KafkaTopicCreatorWithRetention {
-    public static final int RETENTION_HOURS = 1;
+    public static final int RETENTION_HOURS = 24;
 
     public static void main(String[] args) {
         String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";

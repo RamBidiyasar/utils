@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class HealthStatusLoadTester {
 
-    private static final String TARGET_URL = "https://package.airtel.tv/v1/health/status";
+    private static final String TARGET_URL = "https://play.airtel.tv/v1/health/status";
     private static final int TOTAL_REQUESTS = 1000;
     private static final int TARGET_TPS = 30;
 
