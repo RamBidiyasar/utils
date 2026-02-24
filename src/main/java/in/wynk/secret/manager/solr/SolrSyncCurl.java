@@ -28,6 +28,7 @@ public class SolrSyncCurl {
 
         for (ContentPartner cpEnum : ContentPartner.values()) {
             String cp = cpEnum.name(); // use capitalized enum name
+//            String url = "https://batch-preprod.wynk.in/test/cache/ingestion/solrsync/solr_playable?cp=" + cp;
             String url = "https://batch.airtel.tv/test/cache/ingestion/solrsync/solr_playable?cp=" + cp;
 
             try {

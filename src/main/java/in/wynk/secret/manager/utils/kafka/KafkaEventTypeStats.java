@@ -2,6 +2,7 @@ package in.wynk.secret.manager.utils.kafka;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.type.DateTime;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
@@ -36,7 +37,7 @@ public class KafkaEventTypeStats {
 
     // Thread Pool Size
     private static final int THREAD_COUNT = 4;
-    private static final long MAX_TOTAL_EVENTS = 10000;
+    private static final long MAX_TOTAL_EVENTS = 1000000;
 
     private static final String OUTPUT_FILE = "kafka_stats_output.txt";
 
@@ -46,7 +47,7 @@ public class KafkaEventTypeStats {
         String password = "uJK67AUDI1Ax";
 
         // 1. Calculate Time Window
-        long now = System.currentTimeMillis();
+        long now = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(40);
         long startTime = now - LOOKBACK.toMillis();
         long endTime = now;
 

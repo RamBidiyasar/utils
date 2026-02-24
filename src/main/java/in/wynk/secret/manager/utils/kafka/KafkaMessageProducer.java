@@ -17,8 +17,13 @@ public class KafkaMessageProducer {
 //        String username = "appuser";
 //        String password = "uJK67AUDI1Ax";
 
-        String bootstrapServers = "10.164.88.21:9092,10.164.88.22:9092,10.164.88.23:9092";
-        String topicName = "msp-processing-prd-app";
+//        String bootstrapServers = "10.164.88.21:9092,10.164.88.22:9092,10.164.88.23:9092";
+//        String topicName = "msp-processing-prd-app";
+//        String username = "appuser";
+//        String password = "uJK67AUDI1Ax";
+
+        String bootstrapServers = "10.161.24.77:9092";
+        String topicName = "Topic-test";
         String username = "appuser";
         String password = "uJK67AUDI1Ax";
         String key = "825db3c3-e885-4bc3-b026-e051169c4179";

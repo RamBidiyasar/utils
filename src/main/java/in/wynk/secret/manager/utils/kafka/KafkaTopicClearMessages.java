@@ -10,10 +10,25 @@ public class KafkaTopicClearMessages {
 
     public static void main(String[] args) {
 
-        String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
-        String topicName = "atv-events-prod-iptv";
+//        String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
+//        String bootstrapServers = "10.161.24.77:9092";
+//        String topicName = "wcf_prod.sms_highest_priority";
+//        String username = "appuser";
+//        String password = "uJK67AUDI1Ax";
+
+
+
+//        String bootstrapServers = "10.161.24.77:9092";
+//        String topicName = "atv-events-prod-iptv";
+//        String username = "appuser";
+//        String password = "uJK67AUDI1Ax";
+
+
+
+        String bootstrapServers = "10.160.88.23:9092,10.160.88.24:9092,10.160.88.25:9092";
+        String topicName = "wcf_prod.sms_highest_priority";
         String username = "appuser";
-        String password = "uJK67AUDI1Ax";
+        String password = "uJK67dC1Ax";
 
 
 //        String bootstrapServers = "10.169.24.13:9092";

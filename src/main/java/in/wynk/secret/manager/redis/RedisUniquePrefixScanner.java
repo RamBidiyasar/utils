@@ -15,7 +15,7 @@ public class RedisUniquePrefixScanner {
     public static void main(String[] args) {
         // List of IPs to scan
         List<String> listIps = List.of("10.169.24.15", "10.169.24.20");
-        String password = "MysTr0ngP@ssw0rd@123";
+        String password = "wcfMsisdn";
 
         Set<String> uniquePrefixes = Collections.synchronizedSet(new HashSet<>());
         int scanCount = 10000;

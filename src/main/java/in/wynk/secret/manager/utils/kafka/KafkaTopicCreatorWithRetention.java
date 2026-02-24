@@ -9,18 +9,19 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class KafkaTopicCreatorWithRetention {
-    public static final int RETENTION_HOURS = 24;
+    public static final int RETENTION_HOURS = 24*2;
 
     public static void main(String[] args) {
-        String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
-        String topicName = "atv-events-prod-iptv";
+        String bootstrapServers = "10.161.24.22:9092,10.161.24.23:9092,10.161.24.24:9092";
+//        String bootstrapServers = "10.161.24.16:9092,10.161.24.17:9092,10.161.24.18:9092";
+        String topicName = "content-partner-analytics-details";
         String username = "appuser";
         String password = "uJK67AUDI1Ax";
 
 
-
+//
 //        String bootstrapServers = "10.169.24.13:9092";
-//        String topicName = "Topic012";
+//        String topicName = "content-partner-analytics-details";
 //        String username = "appuser";
 //        String password = "uJK67dC1Ax";
 
@@ -41,7 +42,7 @@ public class KafkaTopicCreatorWithRetention {
                 System.out.println("Topic already exists: " + topicName);
             } else {
                 // Create topic with 1 partition and replication factor 1
-                NewTopic newTopic = new NewTopic(topicName, 1024, (short) 1);
+                NewTopic newTopic = new NewTopic(topicName, 8, (short) 1);
                 adminClient.createTopics(Collections.singletonList(newTopic)).all().get();
                 System.out.println("Topic created: " + topicName);
             }

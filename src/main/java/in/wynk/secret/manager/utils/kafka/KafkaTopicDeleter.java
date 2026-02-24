@@ -16,7 +16,7 @@ public class KafkaTopicDeleter {
         String bootstrapServers = "10.169.24.13:9092";
         String username = "appuser";
         String password = "uJK67dC1Ax";
-        String topicPrefix = "mongo";
+        String topicPrefix = "partner-analytics-details";
 
 
         Properties properties = new Properties();

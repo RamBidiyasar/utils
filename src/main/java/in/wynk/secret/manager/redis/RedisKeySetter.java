@@ -12,20 +12,20 @@ import redis.clients.jedis.exceptions.JedisException;
 public class RedisKeySetter {
 
     public static void main(String[] args) {
-//        List<String> listIps = List.of(
-//            "10.161.24.25", "10.161.24.26", "10.161.24.27", "10.161.24.28",
-//            "10.161.24.29", "10.161.24.30", "10.161.24.31", "10.161.24.32",
-//            "10.161.24.33", "10.161.24.34", "10.161.24.35", "10.161.24.36",
-//            "10.161.24.37", "10.161.24.38", "10.161.24.39", "10.161.24.40",
-//            "10.161.24.41", "10.161.24.42", "10.161.24.43", "10.161.24.44",
-//            "10.161.24.45", "10.161.24.46", "10.161.24.47", "10.161.24.48",
-//            "10.161.24.49"
-//        );
+        List<String> listIps = List.of(
+            "10.161.24.25", "10.161.24.26", "10.161.24.27", "10.161.24.28",
+            "10.161.24.29", "10.161.24.30", "10.161.24.31", "10.161.24.32",
+            "10.161.24.33", "10.161.24.34", "10.161.24.35", "10.161.24.36",
+            "10.161.24.37", "10.161.24.38", "10.161.24.39", "10.161.24.40",
+            "10.161.24.41", "10.161.24.42", "10.161.24.43", "10.161.24.44",
+            "10.161.24.45", "10.161.24.46", "10.161.24.47", "10.161.24.48",
+            "10.161.24.49"
+        );
 
 
 //        List<String> listIps = List.of("10.161.24.66","10.161.24.67");
 
-          List<String> listIps = List.of("10.169.24.15","10.169.24.20");
+//          List<String> listIps = List.of("10.169.24.15","10.169.24.20");
           String password = "MysTr0ngP@ssw0rd@123";
 //        String key = "arsenal-complete-axsta_x00i64981739954868922";
 //        String key = "user-recent-fav-sync4FenZf3OmeMC934S30";
@@ -33,8 +33,19 @@ public class RedisKeySetter {
 
 
 //        String key = "user-recent-fav-syncRhHxbpwCd4ayFgwY60";
-        String key = "wcfPlan-310011";
+//        String key = "SsIA5oGtd7uLiwe430";
+//        String key = "wcf-user-offer-provision-TfOfV9GXwB9oxXpld0"; // The prefix for the keys you want to find
 
+
+//        String key = "cmp-TfOfV9GXwB9oxXpld0-IOS";
+
+//        String key = "ErosNowRegisterAuthToken";
+
+//        String key = "XstreamErosnowSubscriptionStatus";
+
+//        String key = "prefClaim-TfOfV9GXwB9oxXpld0";
+
+        String key = "prefPartner-TfOfV9GXwB9oxXpld0";
 
         String value = "{\n" +
             "  \"success\": true,\n" +
@@ -45,7 +56,7 @@ public class RedisKeySetter {
             "  }\n" +
             "}";
         List<String> responses = new ArrayList<>();
-        Operation OPERATION = Operation.GET;
+        Operation OPERATION = Operation.DEL;
 
         for (String ip : listIps) {
             try (Jedis jedis = new Jedis(ip, 6379)) {

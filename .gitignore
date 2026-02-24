@@ -31,3 +31,19 @@ build/
 
 ### VS Code ###
 .vscode/
+/testing2.mmdb/
+
+### Project Specific Ignored Files ###
+fancode.txt
+kafka_stats_output*
+results.csv
+cp.txt
+curl.txt
+sync.txt
+timestamp.store
+*.class
+deleted_keys.txt
+failed_deletions.txt
+uid_deleted_keys.txt
+uid_failed_deletions.txt
+unique_prefixes.txt
