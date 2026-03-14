@@ -22,6 +22,7 @@ public class RedisKeySetter {
             "10.161.24.49"
         );
 
+//        List<String> listIps = List.of("10.161.24.36");
 
 //        List<String> listIps = List.of("10.161.24.66","10.161.24.67");
 
@@ -45,7 +46,12 @@ public class RedisKeySetter {
 
 //        String key = "prefClaim-TfOfV9GXwB9oxXpld0";
 
-        String key = "prefPartner-TfOfV9GXwB9oxXpld0";
+//        String key = "prefPartner-TfOfV9GXwB9oxXpld0";
+
+        String key  = "ErosNowRegisterAuthToken";
+
+
+//        String key = "user-discover-Ym4bsCxwuHTOmXqZ20";
 
         String value = "{\n" +
             "  \"success\": true,\n" +
@@ -65,13 +71,14 @@ public class RedisKeySetter {
 
                 Object response = null;
                 switch (OPERATION){
-                   case  GET -> response = jedis.get(key); // Fetch from string key
+                   case  GET -> response = jedis.get(key);// Fetch from string key
                    case  DEL -> response = jedis.del(key); // Fetch from string key otherwise
                    case  SET -> response = jedis.set(key, value);// Set string key
                     case INFO -> response = jedis.info(); // Get Redis info
                 }
 
                 if (ObjectUtils.isNotEmpty(response)) {
+                    System.out.println("ttl : "  + jedis.ttl(key));
                     System.out.println("Redis IP : " + ip + " , Response : " + response);
                 }
                 responses.add("IP: " + ip + " Response: " + response);
